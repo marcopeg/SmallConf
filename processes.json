@@ -1,0 +1,11 @@
+[{
+	"script" : "server.js",
+	"name" : "DevServer"
+},{
+	"script" : "livereload.js",
+	"name" : "LiveReload"
+},{
+	"script" : "./node_modules/gulp/bin/gulp.js",
+	"name" : "Builder",
+	"args" : "watch"
+}]
