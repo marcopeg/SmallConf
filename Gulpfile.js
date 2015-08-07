@@ -50,7 +50,13 @@ var webpackConfig = {
     }
 };
 
-var lessConf = {};
+var lessConf = {
+    paths: [
+        path.join(__dirname, 'node_modules'),
+        path.join(__dirname, 'src', 'js'),
+        path.join(__dirname, 'src', 'less')
+    ]
+};
 
 gulp.task('build-js', function() {
     var conf = extend(true, {}, webpackConfig, {
