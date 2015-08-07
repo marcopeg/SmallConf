@@ -100,7 +100,25 @@ gulp.task('release-js', function() {
         .pipe(gulp.dest(path.join(__dirname, 'builds/release')));
 });
 
-gulp.task('build-less', function() {
+gulp.task('build-assets', function() {
+    return gulp.src([
+        path.join(__dirname, 'node_modules', 'bootstrap', '**', 'fonts', '**/*'),
+        '!' + path.join(__dirname, 'node_modules', 'bootstrap', 'dist', '**', 'fonts', '**/*'),
+        path.join(__dirname, 'src', 'assets', '**/*')
+    ])
+        .pipe(gulp.dest(path.join(__dirname, 'builds/develop/assets')));
+});
+
+gulp.task('release-assets', function() {
+    return gulp.src([
+        path.join(__dirname, 'node_modules', 'bootstrap', '**', 'fonts', '**/*'),
+        '!' + path.join(__dirname, 'node_modules', 'bootstrap', 'dist', '**', 'fonts', '**/*'),
+        path.join(__dirname, 'src', 'assets', '**/*')
+    ])
+        .pipe(gulp.dest(path.join(__dirname, 'builds/release/assets')));
+});
+
+gulp.task('build-less', ['build-assets'], function() {
     var conf = extend(true, {}, lessConf, {
 
     });
@@ -114,7 +132,7 @@ gulp.task('build-less', function() {
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop')));
 });
 
-gulp.task('release-less', function() {
+gulp.task('release-less', ['release-assets'], function() {
     var conf = extend(true, {}, lessConf, {
         plugins: [cleanCss]
     });
