@@ -5,7 +5,10 @@
   "main": "Gulpfile.js",
   "scripts": {
     "test": "npm test",
-    "start": "./node_modules/pm2/bin/pm2-dev run ./processes.json"
+    "start": "./node_modules/pm2/bin/pm2-dev run ./processes.json",
+    "build": "./node_modules/gulp/bin/gulp.js build",
+    "release": "./node_modules/gulp/bin/gulp.js release",
+    "release-server": "NODE_ENV=release node server.js"
   },
   "author": "",
   "license": "ISC",

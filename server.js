@@ -1,9 +1,13 @@
 var express = require('express');
 var app = express();
 
-app.use(express.static('builds/develop'));
-app.use(express.static('node_modules'));
-app.use(express.static('src/assets'));
+if (process.env.NODE_ENV === 'release') {
+	app.use(express.static('builds/release'));
+} else {
+	app.use(express.static('builds/develop'));
+	app.use(express.static('src/assets'));
+	app.use(express.static('node_modules'));
+};
 
 var server = app.listen(8080, function () {
     var port = server.address().port;
