@@ -8,7 +8,7 @@
     "start": "./node_modules/pm2/bin/pm2-dev run ./processes.json",
     "build": "./node_modules/gulp/bin/gulp.js build",
     "release": "./node_modules/gulp/bin/gulp.js release",
-    "release-server": "NODE_ENV=release node server.js"
+    "release-server": "npm run release && NODE_ENV=release node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +30,7 @@
     "gulp-webpack": "^1.5.0",
     "hogan.js": "^3.0.2",
     "less-plugin-clean-css": "^1.5.1",
+    "pm2": "^0.14.6",
     "react": "^0.13.3",
     "webpack": "^1.11.0"
   }
