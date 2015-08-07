@@ -1,5 +1,10 @@
 var express = require('express');
+var compression = require('compression');
+
 var app = express();
+app.use(compression({
+	level: 1
+}));
 
 if (process.env.NODE_ENV === 'release') {
 	app.use(express.static('builds/release'));
