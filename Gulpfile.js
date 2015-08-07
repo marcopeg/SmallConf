@@ -22,6 +22,12 @@ var webpackConfig = {
     externals: {
         'firebase-url' : 'firebaseUrl'
     },
+    resolve: {
+        modulesDirectories: [
+            'node_modules',
+            'src/js'
+        ]
+    },
     output: {
         library: 'SmallConf',
         libraryTarget: 'umd',
