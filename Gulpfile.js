@@ -11,6 +11,8 @@ var gulpWebpack = require('gulp-webpack');
 var gulpLess = require('gulp-less');
 var gulpRename = require('gulp-rename');
 var gulpSourcemaps = require('gulp-sourcemaps');
+var gulpCssBase64 = require('gulp-css-base64');
+var gulpInlineSource = require('gulp-inline-source');
 
 var LessPluginCleanCSS = require('less-plugin-clean-css')
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
@@ -20,6 +22,8 @@ var webpackConfig = {
         extensions: ['', '.js', '.jsx']
     },
     externals: {
+        react: 'React',
+        firebase: 'Firebase',
         'firebase-url' : 'firebaseUrl'
     },
     resolve: {
@@ -67,10 +71,6 @@ gulp.task('build-js', function() {
                 }
             })
         ],
-        externals: {
-            react: 'React',
-            firebase: 'Firebase'
-        },
         devtool: 'inline-source-map',
         debug: true
     });
@@ -123,6 +123,9 @@ gulp.task('release-less', function() {
         .pipe(gulpRename(function(path) {
             path.basename = 'smallconf_' + pkg.version;
         }))
+        .pipe(gulpCssBase64({
+            baseDir: 'assets'
+        }))
         .pipe(gulp.dest(path.join(__dirname, 'builds/release')));
 });
 
@@ -132,9 +135,13 @@ gulp.task('build-html', function() {
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop')));
 });
 
-gulp.task('release-html', function() {
+gulp.task('release-html', ['release-less', 'release-js'], function() {
     return gulp.src(path.join(__dirname, './src/*.html'))
         .pipe(html4release())
+        .pipe(gulpInlineSource({
+            htmlpath: path.resolve('builds/release/_'),
+            compress: false
+        }))
         .pipe(gulp.dest(path.join(__dirname, 'builds/release')));
 });
 
@@ -148,7 +155,7 @@ function html4develop() {
             'css' : '<link rel="stylesheet" href="./smallconf.css" />',
             'js' : [
                 '<script src="./react/dist/react-with-addons.js"></script>',
-                '<script src="https://cdn.firebase.com/js/client/2.2.9/firebase.js"></script>',
+                '<script src="./firebase.js"></script>',
                 '<script src="./smallconf.js"></script>'
             ].join('\n    ')
         };
@@ -166,8 +173,12 @@ function html4release() {
         var template = hogan.compile(source);
         
         var data = {
-            'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" />',
-            'js' : '<script src="./smallconf_' + pkg.version + '.js"></script>'
+            'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
+            'js' : [
+                '<script src="../../src/assets/firebase.js" inline></script>',
+                '<script src="../../node_modules/react/dist/react-with-addons.min.js" inline></script>',
+                '<script src="./smallconf_' + pkg.version + '.js" inline></script>'
+            ].join('\n    ')
         };
 
         file.contents = new Buffer(template.render(data));
