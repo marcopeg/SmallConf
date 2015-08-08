@@ -7,7 +7,7 @@ module.exports = {
     externals: {
         react: 'React',
         firebase: 'Firebase',
-        'firebase-url' : 'firebaseUrl'
+        settings : 'AppSettings'
     },
     resolve: {
         modulesDirectories: [

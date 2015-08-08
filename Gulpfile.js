@@ -26,6 +26,12 @@ var webpackConfig = require('./config/webpack.config');
 var lessConf = require('./config/less.config');
 var jscsConf = require('./config/jscs.config');
 
+try {
+    var appConf = require('./config/app.config.local');
+} catch (e) {
+    var appConf = require('./config/app.config');
+}
+
 var noop = function() {};
 
 gulp.task('lint-js', function() {
@@ -152,6 +158,7 @@ function html4develop() {
         var template = hogan.compile(source);
         
         var data = {
+            'cfg' : '<script>window.AppSettings=' + JSON.stringify(appConf) + ';</script>',
             'css' : '<link rel="stylesheet" href="./smallconf.css" />',
             'js' : [
                 '<script src="./react/dist/react-with-addons.js"></script>',
@@ -173,6 +180,7 @@ function html4release() {
         var template = hogan.compile(source);
         
         var data = {
+            'cfg' : '<script>window.AppSettings=' + JSON.stringify(appConf) + ';</script>',
             'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
             'js' : [
                 '<script src="../../app/assets/firebase.js" inline></script>',
