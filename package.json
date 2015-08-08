@@ -24,6 +24,7 @@
     "gulp-inline-source": "^2.1.0",
     "gulp-less": "^3.0.3",
     "gulp-lesshint": "^0.2.0",
+    "gulp-lesshint-stylish": "^1.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
     "hogan.js": "^3.0.2",

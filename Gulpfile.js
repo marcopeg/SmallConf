@@ -15,6 +15,7 @@ var gulpSourcemaps = require('gulp-sourcemaps');
 var gulpCssBase64 = require('gulp-css-base64');
 var gulpInlineSource = require('gulp-inline-source');
 var gulpLesshint = require('gulp-lesshint');
+var gulpLesshintStylish = require('gulp-lesshint-stylish');
 
 var LessPluginCleanCSS = require('less-plugin-clean-css')
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
@@ -22,6 +23,7 @@ var cleanCss = new LessPluginCleanCSS({ advanced: true });
 var webpackConfig = require('./config/Webpack.config');
 var lessConf = require('./config/Less.config');
 
+var noop = function() {};
 
 
 gulp.task('build-js', function() {
@@ -83,7 +85,9 @@ gulp.task('release-assets', function() {
 gulp.task('lint-less', function() {
     return gulp.src(path.join(__dirname, './app/*.less'))
         .pipe(gulpLesshint())
-        .pipe(notifyLesshint());
+        .on('error', noop)
+        .pipe(notifyLesshint())
+        .pipe(gulpLesshintStylish());
 });
 
 gulp.task('build-less', ['build-assets'], function() {
