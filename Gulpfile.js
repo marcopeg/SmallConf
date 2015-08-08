@@ -5,6 +5,7 @@ var stream = require('stream');
 var extend = require('extend');
 var webpack = require('webpack');
 var hogan = require('hogan.js');
+var notifier = require('node-notifier');
 
 var gulp = require('gulp');
 var gulpWebpack = require('webpack-stream');
@@ -13,12 +14,15 @@ var gulpRename = require('gulp-rename');
 var gulpSourcemaps = require('gulp-sourcemaps');
 var gulpCssBase64 = require('gulp-css-base64');
 var gulpInlineSource = require('gulp-inline-source');
+var gulpLesshint = require('gulp-lesshint');
 
 var LessPluginCleanCSS = require('less-plugin-clean-css')
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
 
 var webpackConfig = require('./config/Webpack.config');
 var lessConf = require('./config/Less.config');
+
+
 
 gulp.task('build-js', function() {
     var conf = extend(true, {}, webpackConfig, {
@@ -74,6 +78,12 @@ gulp.task('release-assets', function() {
         path.join(__dirname, 'app', 'assets', '**/*')
     ])
         .pipe(gulp.dest(path.join(__dirname, 'builds/release/assets')));
+});
+
+gulp.task('lint-less', function() {
+    return gulp.src(path.join(__dirname, './app/*.less'))
+        .pipe(gulpLesshint())
+        .pipe(notifyLesshint());
 });
 
 gulp.task('build-less', ['build-assets'], function() {
@@ -163,11 +173,30 @@ function html4release() {
     return _stream;
 }
 
+function notifyLesshint() {
+    var _stream = new stream.Transform({objectMode: true});
+    _stream._transform = function(file, unused, callback) {
+        if (file.lesshint && !file.lesshint.success) {
+            var fpath = file.path.split('/');
+
+            notifier.notify({
+                title: 'LessHints Available:',
+                message: [fpath.pop(), fpath.pop()].reverse().join('/')
+            });
+
+            // @TODO: create a report file
+
+        }
+        callback(null, file);
+    };
+    return _stream;
+}
+
 gulp.task('build', ['build-js', 'build-less', 'build-html'], function() {});
 gulp.task('release', ['release-js', 'release-less', 'release-html'], function() {});
 
 gulp.task('watch', ['build'], function() {
     gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['build-js']);
-    gulp.watch('./app/**/*.less', ['build-less']);
+    gulp.watch('./app/**/*.less', ['lint-less', 'build-less']);
     gulp.watch('./app/**/*.html', ['build-html']);
 });
