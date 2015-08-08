@@ -7,7 +7,7 @@ var webpack = require('webpack');
 var hogan = require('hogan.js');
 
 var gulp = require('gulp');
-var gulpWebpack = require('gulp-webpack');
+var gulpWebpack = require('webpack-stream');
 var gulpLess = require('gulp-less');
 var gulpRename = require('gulp-rename');
 var gulpSourcemaps = require('gulp-sourcemaps');
@@ -17,50 +17,8 @@ var gulpInlineSource = require('gulp-inline-source');
 var LessPluginCleanCSS = require('less-plugin-clean-css')
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
 
-var webpackConfig = {
-    resolve: {
-        extensions: ['', '.js', '.jsx']
-    },
-    externals: {
-        react: 'React',
-        firebase: 'Firebase',
-        'firebase-url' : 'firebaseUrl'
-    },
-    resolve: {
-        modulesDirectories: [
-            'node_modules',
-            'src/js'
-        ]
-    },
-    output: {
-        library: 'SmallConf',
-        libraryTarget: 'umd',
-        filename: 'smallconf.js',
-        sourceMapFilename: 'smallconf.map.js'
-    },
-    module: {
-        loaders: [
-            {
-                test: /\.js?$/,
-                exclude: /(node_modules|bower_components)/,
-                loader: 'babel-loader?optional[]=runtime'
-            },
-            {
-                test: /\.jsx?$/,
-                exclude: /(node_modules|bower_components)/,
-                loader: 'babel-loader?optional[]=runtime'
-            }
-        ]
-    }
-};
-
-var lessConf = {
-    paths: [
-        path.join(__dirname, 'node_modules'),
-        path.join(__dirname, 'src', 'js'),
-        path.join(__dirname, 'src', 'less')
-    ]
-};
+var webpackConfig = require('./Webpack.config');
+var lessConf = require('./Less.config');
 
 gulp.task('build-js', function() {
     var conf = extend(true, {}, webpackConfig, {

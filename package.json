@@ -1,7 +1,7 @@
 {
-  "name": "SmallConf",
+  "name": "smallconf",
   "version": "1.0.0",
-  "description": "small conference website",
+  "description": "organiser tool for conferences and meet-up",
   "main": "Gulpfile.js",
   "scripts": {
     "test": "npm test",
@@ -10,8 +10,6 @@
     "release": "./node_modules/gulp/bin/gulp.js release",
     "release-server": "npm run release && NODE_ENV=release node server.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "babel-core": "^5.8.21",
     "babel-loader": "^5.3.2",
@@ -27,11 +25,31 @@
     "gulp-less": "^3.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
-    "gulp-webpack": "^1.5.0",
     "hogan.js": "^3.0.2",
     "less-plugin-clean-css": "^1.5.1",
     "pm2": "^0.14.6",
     "react": "^0.13.3",
-    "webpack": "^1.11.0"
-  }
+    "webpack": "^1.11.0",
+    "webpack-stream": "^2.1.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcopeg/SmallConf.git"
+  },
+  "keywords": [
+    "conference",
+    "organiser",
+    "single",
+    "page",
+    "application",
+    "firebase",
+    "reactjs"
+  ],
+  "author": "Marco Pegoraro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marcopeg/SmallConf/issues"
+  },
+  "homepage": "https://github.com/marcopeg/SmallConf#readme"
 }
