@@ -1,0 +1,9 @@
+{
+  "firebase": "smallconf",
+  "public": "builds/release",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
