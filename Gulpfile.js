@@ -17,7 +17,7 @@ var gulpInlineSource = require('gulp-inline-source');
 var gulpLesshint = require('gulp-lesshint');
 var gulpLesshintStylish = require('gulp-lesshint-stylish');
 var gulpJscs = require('gulp-jscs');
-var gulpJscsStylish = require('gulp-jscs-stylish');
+var gulpJsxcs = require('gulp-jsxcs');
 
 var LessPluginCleanCSS = require('less-plugin-clean-css')
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
@@ -35,11 +35,13 @@ try {
 var noop = function() {};
 
 gulp.task('lint-js', function() {
-    return gulp.src(path.join(__dirname, './app/*.js'))
-        .pipe(gulpJscs(jscsConf))
-        .on('error', noop)
-        .pipe(notifyJscs())
-        .pipe(gulpJscsStylish());
+    return gulp.src([
+        path.join(__dirname, './app/*.js'),
+        path.join(__dirname, './app/js/**/*.js'),
+        path.join(__dirname, './app/js/**/*.jsx')
+    ])
+        .pipe(gulpJsxcs(jscsConf))
+        .pipe(notifyJscs());
 });
 
 gulp.task('build-js', function() {
@@ -217,7 +219,7 @@ function notifyLesshint() {
 function notifyJscs() {
     var _stream = new stream.Transform({objectMode: true});
     _stream._transform = function(file, unused, callback) {
-        if (file.jscs && !file.jscs.success) {
+        if (file.jsxcs && !file.jsxcs.success) {
             var fpath = file.path.split('/');
 
             notifier.notify({
