@@ -32,7 +32,7 @@ Open your browser and go to `http://localhost:8080` to run the app on your local
 ### Release
 
 	# test a release locally
-	npm run release-server
+	npm run start-release
 
 ## Contribute
 

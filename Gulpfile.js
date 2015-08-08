@@ -32,7 +32,7 @@ gulp.task('build-js', function() {
         devtool: 'inline-source-map',
         debug: true
     });
-    return gulp.src(path.join(__dirname, './src/*.js'))
+    return gulp.src(path.join(__dirname, './app/*.js'))
         .pipe(gulpWebpack(conf))
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop')));
 });
@@ -50,7 +50,7 @@ gulp.task('release-js', function() {
         ],
         debug: false
     });
-    return gulp.src(path.join(__dirname, './src/*.js'))
+    return gulp.src(path.join(__dirname, './app/*.js'))
         .pipe(gulpWebpack(conf))
         .pipe(gulpRename(function(path) {
             path.basename = 'smallconf_' + pkg.version;
@@ -62,7 +62,7 @@ gulp.task('build-assets', function() {
     return gulp.src([
         path.join(__dirname, 'node_modules', 'bootstrap', '**', 'fonts', '**/*'),
         '!' + path.join(__dirname, 'node_modules', 'bootstrap', 'dist', '**', 'fonts', '**/*'),
-        path.join(__dirname, 'src', 'assets', '**/*')
+        path.join(__dirname, 'app', 'assets', '**/*')
     ])
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop/assets')));
 });
@@ -71,7 +71,7 @@ gulp.task('release-assets', function() {
     return gulp.src([
         path.join(__dirname, 'node_modules', 'bootstrap', '**', 'fonts', '**/*'),
         '!' + path.join(__dirname, 'node_modules', 'bootstrap', 'dist', '**', 'fonts', '**/*'),
-        path.join(__dirname, 'src', 'assets', '**/*')
+        path.join(__dirname, 'app', 'assets', '**/*')
     ])
         .pipe(gulp.dest(path.join(__dirname, 'builds/release/assets')));
 });
@@ -80,7 +80,7 @@ gulp.task('build-less', ['build-assets'], function() {
     var conf = extend(true, {}, lessConf, {
 
     });
-    return gulp.src(path.join(__dirname, './src/*.less'))
+    return gulp.src(path.join(__dirname, './app/*.less'))
         .pipe(gulpSourcemaps.init())
         .pipe(gulpLess(conf))
         .pipe(gulpSourcemaps.write())
@@ -94,7 +94,7 @@ gulp.task('release-less', ['release-assets'], function() {
     var conf = extend(true, {}, lessConf, {
         plugins: [cleanCss]
     });
-    return gulp.src(path.join(__dirname, './src/*.less'))
+    return gulp.src(path.join(__dirname, './app/*.less'))
         .pipe(gulpLess(conf))
         .pipe(gulpRename(function(path) {
             path.basename = 'smallconf_' + pkg.version;
@@ -106,13 +106,13 @@ gulp.task('release-less', ['release-assets'], function() {
 });
 
 gulp.task('build-html', function() {
-    return gulp.src(path.join(__dirname, './src/*.html'))
+    return gulp.src(path.join(__dirname, './app/*.html'))
         .pipe(html4develop())
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop')));
 });
 
 gulp.task('release-html', ['release-less', 'release-js'], function() {
-    return gulp.src(path.join(__dirname, './src/*.html'))
+    return gulp.src(path.join(__dirname, './app/*.html'))
         .pipe(html4release())
         .pipe(gulpInlineSource({
             htmlpath: path.resolve('builds/release/_'),
@@ -151,7 +151,7 @@ function html4release() {
         var data = {
             'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
             'js' : [
-                '<script src="../../src/assets/firebase.js" inline></script>',
+                '<script src="../../app/assets/firebase.js" inline></script>',
                 '<script src="../../node_modules/react/dist/react-with-addons.min.js" inline></script>',
                 '<script src="./smallconf_' + pkg.version + '.js" inline></script>'
             ].join('\n    ')
@@ -167,7 +167,7 @@ gulp.task('build', ['build-js', 'build-less', 'build-html'], function() {});
 gulp.task('release', ['release-js', 'release-less', 'release-html'], function() {});
 
 gulp.task('watch', ['build'], function() {
-    gulp.watch(['./src/**/*.js', './src/**/*.jsx'], ['build-js']);
-    gulp.watch('./src/**/*.less', ['build-less']);
-    gulp.watch('./src/**/*.html', ['build-html']);
+    gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['build-js']);
+    gulp.watch('./app/**/*.less', ['build-less']);
+    gulp.watch('./app/**/*.html', ['build-html']);
 });

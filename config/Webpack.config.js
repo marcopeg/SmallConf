@@ -12,7 +12,7 @@ module.exports = {
     resolve: {
         modulesDirectories: [
             path.join(__dirname, '..', 'node_modules'),
-            path.join(__dirname, '..', 'src', 'js'),
+            path.join(__dirname, '..', 'app', 'js'),
         ]
     },
     output: {
