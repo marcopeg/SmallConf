@@ -12,6 +12,7 @@
 
 module.exports = {
 	firebaseUrl: 'https://smallconf.firebaseio.com/',
+	gmapApiKey: 'AIzaSyBa0ly5WszC0HICL_sHhN3facnkIjf7TUU',
 	conf: {
 		name: 'SmallConf',
 		address: 'Simrishamnsgatan 24, Malmö',
