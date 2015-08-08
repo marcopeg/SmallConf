@@ -17,8 +17,8 @@ var gulpInlineSource = require('gulp-inline-source');
 var LessPluginCleanCSS = require('less-plugin-clean-css')
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
 
-var webpackConfig = require('./Webpack.config');
-var lessConf = require('./Less.config');
+var webpackConfig = require('./config/Webpack.config');
+var lessConf = require('./config/Less.config');
 
 gulp.task('build-js', function() {
     var conf = extend(true, {}, webpackConfig, {
