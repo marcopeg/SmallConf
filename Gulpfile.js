@@ -137,7 +137,7 @@ gulp.task('release-less', ['release-assets'], function() {
         .pipe(gulp.dest(path.join(__dirname, 'builds/release')));
 });
 
-gulp.task('build-html', function() {
+gulp.task('build-html', ['build-js'], function() {
     return gulp.src(path.join(__dirname, './app/*.html'))
         .pipe(html4develop())
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop')));
@@ -158,9 +158,10 @@ function html4develop() {
     _stream._transform = function(file, unused, callback) {
         var source = String(file.contents);
         var template = hogan.compile(source);
-        
+
         var data = {
-            'cfg' : '<script>window.AppSettings=' + JSON.stringify(appConf) + ';</script>',
+            'html' : '',
+            'cfg' : JSON.stringify(appConf),
             'css' : '<link rel="stylesheet" href="./smallconf.css" />',
             'js' : [
                 '<script src="./react/dist/react-with-addons.js"></script>',
@@ -175,14 +176,19 @@ function html4develop() {
     return _stream;
 }
 
+// release will render an isomorphic app
 function html4release() {
     var _stream = new stream.Transform({objectMode: true});
     _stream._transform = function(file, unused, callback) {
         var source = String(file.contents);
         var template = hogan.compile(source);
-        
+
+        var appBuild = require('./builds/release/smallconf_' + pkg.version);
+        var appMarkup = appBuild.renderMarkup(appConf);
+
         var data = {
-            'cfg' : '<script>window.AppSettings=' + JSON.stringify(appConf) + ';</script>',
+            'html' : appMarkup,
+            'cfg' : JSON.stringify(appConf),
             'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
             'js' : [
                 '<script src="../../app/assets/firebase.js" inline></script>',

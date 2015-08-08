@@ -7,7 +7,14 @@
 </head>
 
 <body>
-    {{{ cfg }}}
+
+	<div id="app">{{{ html }}}</div>
+	
     {{{ js }}}
+
+    <script>
+    	SmallConf.start({{{ cfg }}})
+    </script>
+    
 </body>
 </html>
