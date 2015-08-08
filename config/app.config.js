@@ -11,5 +11,10 @@
  */
 
 module.exports = {
-	firebaseUrl: 'https://smallconf.firebaseio.com/'
+	firebaseUrl: 'https://smallconf.firebaseio.com/',
+	conf: {
+		name: 'SmallConf',
+		address: 'Simrishamnsgatan 24, Malmö',
+		nextDate: '3st September 2015'
+	}
 };
