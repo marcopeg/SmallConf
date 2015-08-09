@@ -13,9 +13,7 @@
 module.exports = {
 	firebaseUrl: 'https://smallconf.firebaseio.com/',
 	gmapApiKey: 'AIzaSyBa0ly5WszC0HICL_sHhN3facnkIjf7TUU',
-	conf: {
-		name: 'SmallConf',
-		address: 'Simrishamnsgatan 24, Malmö',
-		nextDate: '3st September 2015'
-	}
+	confName: 'Conference Name',
+	confAddress: 'where do you host your conf?',
+	confNextDate: 'when next event will take place?'
 };

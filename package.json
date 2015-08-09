@@ -5,10 +5,15 @@
   "main": "Gulpfile.js",
   "scripts": {
     "test": "npm test",
-    "start": "./node_modules/pm2/bin/pm2-dev run ./processes.json",
-    "build": "./node_modules/gulp/bin/gulp.js build",
-    "release": "./node_modules/gulp/bin/gulp.js release",
-    "start-release": "npm run release && NODE_ENV=release node lib/server.js"
+    "start": "node --harmony ./node_modules/pm2/bin/pm2-dev run ./processes.json",
+    "lint": "node --harmony ./node_modules/gulp/bin/gulp.js lint",
+    "build": "node --harmony ./node_modules/gulp/bin/gulp.js build",
+    "release": "node --hramony ./node_modules/gulp/bin/gulp.js release",
+    "watch": "node --harmony ./node_modules/gulp/bin/gulp.js watch",
+    "watch-lint": "node --harmony ./node_modules/gulp/bin/gulp.js watch-lint",
+    "server": "node --harmony lib/server.js",
+    "server-release": "NODE_ENV=release node --harmony lib/server.js",
+    "start-release": "npm run release && NODE_ENV=release node --harmony lib/server.js"
   },
   "dependencies": {
     "babel-core": "^5.8.21",
@@ -34,6 +39,7 @@
     "pm2": "^0.14.6",
     "react": "^0.13.3",
     "react-bootstrap": "^0.24.3",
+    "request": "^2.60.0",
     "webpack": "^1.11.0",
     "webpack-stream": "^2.1.0"
   },
