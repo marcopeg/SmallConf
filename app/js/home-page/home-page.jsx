@@ -6,6 +6,15 @@ var Button = require('react-bootstrap/lib/Button');
 var GoogleMap = require('./google-map');
 
 module.exports = React.createClass({
+    getDefaultProps() {
+        return {
+            gmapApiKey: 'gmap-api-key',
+            confName: 'conf-name',
+            confAddress: 'conf-address',
+            confNextDate: 'conf-next-date'
+        };
+    },
+
     getInitialState() {
         return {
             gmapIsVisible: false
@@ -21,25 +30,24 @@ module.exports = React.createClass({
 
     render() {
         var gmap;
-        var conf = this.props.conf;
 
         if (this.state.gmapIsVisible) {
             gmap = (
                 <GoogleMap
-                    apiKey={this.props.gmapApiKey}
+                    apiKey={this.props.confGmapApiKey}
                     address={conf.address} />
             );
         }
 
         return (
             <Grid>
-                <PageHeader className="text-center">{conf.name}</PageHeader>
+                <PageHeader className="text-center">{this.props.confName}</PageHeader>
                 <div className="text-center">
                     <Well bsSize="large">
-                        <h4>{conf.nextDate}</h4>
+                        <h4>{this.props.confNextDate}</h4>
                     </Well>
                     <p>
-                        <Button bsStyle="link" onClick={this._toggleGmap}>{conf.address}</Button>
+                        <Button bsStyle="link" onClick={this._toggleGmap}>{this.props.confAddress}</Button>
                     </p>
                     {gmap}
                 </div>
