@@ -34,8 +34,8 @@ module.exports = React.createClass({
         if (this.state.gmapIsVisible) {
             gmap = (
                 <GoogleMap
-                    apiKey={this.props.confGmapApiKey}
-                    address={conf.address} />
+                    apiKey={this.props.gmapApiKey}
+                    address={this.props.confAddress} />
             );
         }
 
