@@ -16,7 +16,6 @@ var gulpCssBase64 = require('gulp-css-base64');
 var gulpInlineSource = require('gulp-inline-source');
 var gulpLesshint = require('gulp-lesshint');
 var gulpLesshintStylish = require('gulp-lesshint-stylish');
-var gulpJscs = require('gulp-jscs');
 var gulpJsxcs = require('gulp-jsxcs');
 
 var LessPluginCleanCSS = require('less-plugin-clean-css')
@@ -162,7 +161,7 @@ function html4develop() {
         var source = String(file.contents);
         var template = hogan.compile(source);
 
-        if (true) {
+        if (false) {
             getInitialState().then(function(initialState) {
                 var appBuild = require('./builds/develop/smallconf');
                 var appMarkup = appBuild.renderMarkup(initialState);
