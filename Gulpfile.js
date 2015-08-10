@@ -16,7 +16,6 @@ var gulpCssBase64 = require('gulp-css-base64');
 var gulpInlineSource = require('gulp-inline-source');
 var gulpLesshint = require('gulp-lesshint');
 var gulpLesshintStylish = require('gulp-lesshint-stylish');
-var gulpJscs = require('gulp-jscs');
 var gulpJsxcs = require('gulp-jsxcs');
 
 var LessPluginCleanCSS = require('less-plugin-clean-css')
@@ -26,13 +25,10 @@ var webpackConfig = require('./config/webpack.config');
 var lessConf = require('./config/less.config');
 var jscsConf = require('./config/jscs.config');
 
-try {
-    var appConf = require('./config/app.config.local');
-} catch (e) {
-    var appConf = require('./config/app.config');
-}
-
 var noop = function() {};
+
+var appConf = require('./lib/app-conf');
+var getInitialState = require('./app/get-initial-state.iso');
 
 gulp.task('lint-js', function() {
     return gulp.src([
@@ -56,7 +52,10 @@ gulp.task('build-js', function() {
         devtool: 'inline-source-map',
         debug: true
     });
-    return gulp.src(path.join(__dirname, './app/*.js'))
+    return gulp.src([
+        path.join(__dirname, './app/*.js'),
+        '!' + path.join(__dirname, './app/*.iso.js')
+    ])
         .pipe(gulpWebpack(conf))
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop')));
 });
@@ -74,7 +73,10 @@ gulp.task('release-js', function() {
         ],
         debug: false
     });
-    return gulp.src(path.join(__dirname, './app/*.js'))
+    return gulp.src([
+        path.join(__dirname, './app/*.js'),
+        '!' + path.join(__dirname, './app/*.iso.js')
+    ])
         .pipe(gulpWebpack(conf))
         .pipe(gulpRename(function(path) {
             path.basename = 'smallconf_' + pkg.version;
@@ -159,19 +161,40 @@ function html4develop() {
         var source = String(file.contents);
         var template = hogan.compile(source);
 
-        var data = {
-            'html' : '',
-            'cfg' : JSON.stringify(appConf),
-            'css' : '<link rel="stylesheet" href="./smallconf.css" />',
-            'js' : [
-                '<script src="./react/dist/react-with-addons.js"></script>',
-                '<script src="./firebase.js"></script>',
-                '<script src="./smallconf.js"></script>'
-            ].join('\n    ')
-        };
+        if (false) {
+            getInitialState().then(function(initialState) {
+                var appBuild = require('./builds/develop/smallconf');
+                var appMarkup = appBuild.renderMarkup(initialState);
+                _render(initialState, appMarkup);
+            }).catch(function(err) {
+                console.error('Error building app initial state:', err);
+            });
+        } else {
+            _render({
+                settings: appConf,
+                events: [],
+                drafts: [],
+                speakers: []
+            }, '');
+        }
 
-        file.contents = new Buffer(template.render(data));
-        callback(null, file);
+        function _render(initialState, appMarkup) {
+            var data = {
+                'firebaseUrl' : appConf.firebaseUrl,
+                'html' : appMarkup,
+                'cfg' : JSON.stringify(initialState),
+                'css' : '<link rel="stylesheet" href="./smallconf.css" />',
+                'js' : [
+                    '<script src="./react/dist/react-with-addons.js"></script>',
+                    '<script src="./firebase.js"></script>',
+                    '<script src="./smallconf.js"></script>'
+                ].join('\n    ')
+            };
+
+            file.contents = new Buffer(template.render(data));
+            callback(null, file);
+        }
+
     };
     return _stream;
 }
@@ -183,22 +206,39 @@ function html4release() {
         var source = String(file.contents);
         var template = hogan.compile(source);
 
-        var appBuild = require('./builds/release/smallconf_' + pkg.version);
-        var appMarkup = appBuild.renderMarkup(appConf);
+        if (true) {
+            getInitialState().then(function(initialState) {
+                var appBuild = require('./builds/release/smallconf_' + pkg.version);
+                var appMarkup = appBuild.renderMarkup(initialState);
+                _render(initialState, appMarkup);
+            }).catch(function(err) {
+                console.error('Error building app initial state:', err);
+            });
+        } else {
+            _render({
+                settings: appConf,
+                events: [],
+                drafts: [],
+                speakers: []
+            }, '');
+        }
 
-        var data = {
-            'html' : appMarkup,
-            'cfg' : JSON.stringify(appConf),
-            'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
-            'js' : [
-                '<script src="../../app/assets/firebase.js" inline></script>',
-                '<script src="../../node_modules/react/dist/react-with-addons.min.js" inline></script>',
-                '<script src="./smallconf_' + pkg.version + '.js" inline></script>'
-            ].join('\n    ')
-        };
+        function _render(initialState, appMarkup) {
+            var data = {
+                'firebaseUrl' : appConf.firebaseUrl,
+                'html' : appMarkup,
+                'cfg' : JSON.stringify(initialState),
+                'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
+                'js' : [
+                    '<script src="../../app/assets/firebase.js" inline></script>',
+                    '<script src="../../node_modules/react/dist/react-with-addons.min.js" inline></script>',
+                    '<script src="./smallconf_' + pkg.version + '.js" inline></script>'
+                ].join('\n    ')
+            };
 
-        file.contents = new Buffer(template.render(data));
-        callback(null, file);
+            file.contents = new Buffer(template.render(data));
+            callback(null, file);
+        }
     };
     return _stream;
 }
@@ -241,8 +281,9 @@ function notifyJscs() {
     return _stream;
 }
 
-gulp.task('build', ['build-js', 'build-less', 'build-html'], function() {});
-gulp.task('release', ['release-js', 'release-less', 'release-html'], function() {});
+gulp.task('lint', ['lint-js', 'lint-less']);
+gulp.task('build', ['build-js', 'build-less', 'build-html']);
+gulp.task('release', ['release-js', 'release-less', 'release-html']);
 
 gulp.task('watch', ['build'], function() {
     gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['build-js']);

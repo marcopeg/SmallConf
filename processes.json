@@ -7,9 +7,9 @@
 },{
 	"script" : "./node_modules/gulp/bin/gulp.js",
 	"name" : "Builder",
-	"args" : "watch"
+	"args" : "watch --harmony"
 },{
 	"script" : "./node_modules/gulp/bin/gulp.js",
 	"name" : "Linter",
-	"args" : "watch-lint"
+	"args" : "watch-lint --harmony"
 }]
