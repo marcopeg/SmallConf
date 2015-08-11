@@ -40,26 +40,10 @@ var scoresStore = Fluxo.createStore({
     },
 });
 
-console.log(scoresStore.state);
+scoresStore.subscribe(function(prevState) {
+    console.log('new state', this.state);
+    console.log('prev state', prevState);
+});
 
-Fluxo.runAction('set-name', 'luke');
-
-// setName('luke');
-setSurname('skywalker');
-console.log(scoresStore.state);
-
-scoresStore.stopListen();
-
-setName('foo');
-console.log(scoresStore.state);
-
-scoresStore.listen();
-
-setName('hihi');
-console.log(scoresStore.state);
-
-// surname('skywalker');
-// age(22);
-// score(74);
-
-// console.log(scores.state);
+setName('Luke');
+setSurname('Skywalker');

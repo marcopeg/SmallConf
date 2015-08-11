@@ -7,15 +7,14 @@ module.exports = StoreClass;
 function StoreClass() {
     this.state = {};
     this.actions = {};
-    this.subscriptions = [];
+    this.actionsSubscriptions = [];
+    this.storeSubscriptions = [];
     this.isDisposed = false;
 }
 
 StoreClass.prototype.init = function(config) {
-
     this.state = getInitialState(config);
     this.actions = getActions(config);
-
     this.listen();
 };
 
@@ -23,7 +22,11 @@ StoreClass.prototype.dispose = function() {
     this.stopListen();
     this.state = null;
     this.actions = null;
-    this.subscriptions = null;
+    this.actionsSubscriptions = null;
+
+    this.storeSubscriptions.forEach(sub => sub.dispose());
+    this.storeSubscriptions = null;
+
     this.isDisposed = true;
 };
 
@@ -32,18 +35,35 @@ StoreClass.prototype.listen = function() {
         .map(actionName => this.actions[actionName])
         .forEach(action => {
             var ticket = action.observable.subscribe(action.callback.bind(this));
-            this.subscriptions.push(ticket);
+            this.actionsSubscriptions.push(ticket);
         });
 };
 
 StoreClass.prototype.stopListen = function() {
-    this.subscriptions.forEach(sub => sub.dispose());
-    this.subscriptions = [];
+    this.actionsSubscriptions.forEach(sub => sub.dispose());
+    this.actionsSubscriptions = [];
 };
 
 StoreClass.prototype.setState = function(newState) {
     var prevState = extend({}, this.state);
     this.state = extend(true, {}, this.state, newState || {});
+
+    this.storeSubscriptions
+        .filter(s => s.isActive)
+        .forEach(s => s.fn.call(this, prevState));
+};
+
+StoreClass.prototype.subscribe = function(fn) {
+    var ticket = {
+        isActive: true,
+        fn: fn,
+        dispose: $=> {
+            ticket.isActive = false;
+            delete ticket.fn;
+        }
+    };
+    this.storeSubscriptions.push(ticket);
+    return ticket;
 };
 
 function getInitialState(settings) {
