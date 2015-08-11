@@ -66,7 +66,7 @@ StoreClass.prototype.setState = function(newState) {
     this.__emitterTimeout = setTimeout($=> {
         this.storeSubscriptions
             .filter(s => s.isActive)
-            .forEach(s => s.fn.call(this, this.__prevState));
+            .forEach(s => s.fn.call(this, this.state, this.__prevState));
 
         this.__prevState = null;
     });
@@ -95,6 +95,26 @@ StoreClass.prototype.trigger = function(signature) {
 
 StoreClass.prototype.hasAction = function(signature) {
     return Object.keys(this.actions).indexOf(signature) !== -1;
+};
+
+StoreClass.prototype.componentMixin = function() {
+    var subscriptions;
+    var _this = this;
+
+    return {
+        getInitialState: function() {
+            return _this.state;
+        },
+
+        componentWillMount: function() {
+            this.store = _this;
+            subscriptions = _this.subscribe(newState => this.setState(newState));
+        },
+
+        componentWillUnmount: function() {
+            subscriptions.dispose();
+        }
+    };
 };
 
 function getInitialState(settings) {

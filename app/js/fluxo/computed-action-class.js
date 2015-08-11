@@ -58,6 +58,7 @@ ComputedAction.prototype.dispose = function() {
 };
 
 ComputedAction.prototype.run = function() {
+    actionsLogger.log(this.signature);
     this.value = this.fn();
     this.externalSubscriptions
         .filter(s => s.isActive)

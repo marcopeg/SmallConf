@@ -9,3 +9,4 @@ exports.createComputedAction = actionsFactory.createComputed;
 exports.createStore = storeFactory.create;
 
 exports.trigger = actionsRegister.run;
+exports.getAction = actionsRegister.get;

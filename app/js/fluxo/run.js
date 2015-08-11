@@ -1,74 +1,50 @@
 
+var React = require('react');
 var Fluxo = require('fluxo');
 
-Fluxo.createAction('set-name', 'marco');
-Fluxo.createAction('set-surname', 'peg');
+var name = Fluxo.createAction('name', 'Luke');
+var surname = Fluxo.createAction('surname', 'Skywalker');
 
 var fullName = Fluxo.createComputedAction('full-name', function() {
-    return Fluxo.trigger('set-name') + ' ' + Fluxo.trigger('set-surname');
+    return name() + ' ' + surname();
 });
 
-var scoresStore = Fluxo.createStore({
-    actions: [
-        'full-name',
-        'set-score'
-    ],
-    getInitialState() {
+var myStore = Fluxo.createStore({
+
+    getInitialState: function() {
         return {
-            name: fullName.value(),
-            score: 0
+            name: fullName.value()
         };
     },
 
-    onFullName: function(val) {
-        this.setState({
-            name: val
-        });
-    },
+    actions: [
+        'full-name'
+    ],
 
-    onSetScore: function(val) {
+    onFullName(value) {
         this.setState({
-            score: val
+            name: value
         });
     }
 });
 
-scoresStore.subscribe(function(prevState) {
-    console.log(this.state.name + ' score ' + this.state.score);
-});
+var ExampleComponent = React.createClass({
 
-var ageStore = Fluxo.createStore({
-    actions: [
-        'set-name',
-        'set-age'
-    ],
-    getInitialState() {
-        return {
-            name: fullName.value(),
-            age: 0
-        };
+    mixins: [myStore.componentMixin()],
+
+    onClick() {
+        Fluxo.trigger('name', 'Darth');
+        Fluxo.trigger('surname', 'Vader');
     },
 
-    onSetName: function(val) {
-        this.setState({
-            name: val
-        });
-    },
-
-    onSetAge: function(val) {
-        this.setState({
-            age: val
-        });
+    render() {
+        return (
+            <div>
+                <p>{this.state.name}</p>
+                <button onClick={this.onClick}>turn to the dark side</button>
+            </div>
+        );
     }
 });
 
-ageStore.subscribe(function(prevState) {
-    console.log(this.state.name + ' age ' + this.state.age);
-});
-
-Fluxo.trigger({
-    'set-name': 'Luke',
-    'set-surname': 'Skywalker',
-    'set-score': 22,
-    setAge: 34
-});
+React.render(<ExampleComponent />, document.getElementById('app'));
