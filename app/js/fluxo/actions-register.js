@@ -2,7 +2,7 @@
 var signatures = [];
 var actions = {};
 
-function registerAction(Action) {
+function addAction(Action) {
     var signature = Action.signature;
 
     if (signatures.indexOf(signature) !== -1) {
@@ -12,6 +12,10 @@ function registerAction(Action) {
         actions[signature] = Action;
         return true;
     }
+}
+
+function getAction(actionName) {
+    return actions[actionName] || false;
 }
 
 function runAction(signature, value) {
@@ -24,5 +28,6 @@ function runAction(signature, value) {
     return action.apply(action, args);
 }
 
-exports.add = registerAction;
+exports.add = addAction;
+exports.get = getAction;
 exports.run = runAction;

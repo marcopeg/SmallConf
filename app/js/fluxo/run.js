@@ -13,17 +13,23 @@ var setAge = Fluxo.createAction({
     initialValue: 34
 });
 
-var setScore = Fluxo.createAction({
-    signature: 'set-score',
-    initialValue: 12
-});
+// var setScore = Fluxo.createAction({
+//     signature: 'set-score',
+//     initialValue: 12
+// });
 
 var scoresStore = Fluxo.createStore({
-    actions: [setName, setSurname, setAge],
+    actions: [
+        'set-name',
+        setSurname,
+        setAge,
+        'set-score'
+    ],
     getInitialState() {
         return {
             name: setName(),
-            surname: 'solo'
+            surname: 'solo',
+            score: 0
         };
     },
 
@@ -38,6 +44,12 @@ var scoresStore = Fluxo.createStore({
             surname: val
         });
     },
+
+    onSetScore: function(val) {
+        this.setState({
+            score: val
+        });
+    }
 });
 
 scoresStore.subscribe(function(prevState) {
@@ -47,3 +59,5 @@ scoresStore.subscribe(function(prevState) {
 
 setName('Luke');
 setSurname('Skywalker');
+
+Fluxo.runAction('set-score', 22);

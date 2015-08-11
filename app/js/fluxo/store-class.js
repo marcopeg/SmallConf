@@ -2,6 +2,9 @@
 var extend = require('extend');
 var camelcase = require('camelcase');
 
+var actionsRegister = require('./actions-register');
+var actionFactory = require('./actions-factory');
+
 module.exports = StoreClass;
 
 function StoreClass() {
@@ -107,11 +110,25 @@ function getActions(config) {
 
     config.actions
         .filter(action => action.signature !== null)
+        .map(action => buildActionsFromString(action))
         .map(action => getActionCallback(action, config))
         .filter(v => v !== null)
         .forEach(action => actionsList[action.observable.signature] = action);
 
     return actionsList;
+}
+
+function buildActionsFromString(actionName) {
+    if (typeof actionName !== 'string') {
+        return actionName;
+    }
+
+    var action = actionsRegister.get(actionName);
+    if (!action) {
+        action = actionFactory.create(actionName);
+    }
+
+    return action;
 }
 
 function getActionCallback(action, config) {
