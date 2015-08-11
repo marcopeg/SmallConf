@@ -1,5 +1,6 @@
 
 var ActionClass = require('./action-class');
+var ActionsRegister = require('./actions-register');
 
 function createAction(config) {
     var _instance = new ActionClass();
@@ -18,7 +19,11 @@ function createAction(config) {
     Action.subscribe = _instance.subscribe.bind(_instance);
     Action.signature = _instance.signature;
 
-    return Action;
+    if (ActionsRegister.add(Action)) {
+        return Action;
+    } else {
+        throw new Error('Action alredy defined: ' + Action.signature);
+    }
 }
 
 exports.create = createAction;

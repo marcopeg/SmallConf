@@ -42,7 +42,9 @@ var scoresStore = Fluxo.createStore({
 
 console.log(scoresStore.state);
 
-setName('luke');
+Fluxo.runAction('set-name', 'luke');
+
+// setName('luke');
 setSurname('skywalker');
 console.log(scoresStore.state);
 

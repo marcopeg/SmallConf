@@ -3,3 +3,4 @@ builds/
 npm-debug.log
 config/app.config.local.js
 firebase.json
+.node-version
