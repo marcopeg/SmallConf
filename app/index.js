@@ -7,8 +7,10 @@ var HomePage = require('home-page');
 
 // client side startup
 exports.start = function(initialState, fireBase) {
-    var home = React.createElement(HomePage, initialState.settings);
-    React.render(home, document.getElementById('app'));
+    require('fluxo/run');
+
+    // var home = React.createElement(HomePage, initialState.settings);
+    // React.render(home, document.getElementById('app'));
 };
 
 // server side rendering
