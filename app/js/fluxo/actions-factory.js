@@ -1,10 +1,11 @@
 
 var ActionClass = require('./action-class');
-var ActionsRegister = require('./actions-register');
+var ComputedActionClass = require('./computed-action-class');
+var actionsRegister = require('./actions-register');
 
-function createAction(config) {
+function createAction() {
     var _instance = new ActionClass();
-    _instance.init(config);
+    _instance.init.apply(_instance, arguments);
 
     // setter/getter interface
     var Action = function() {
@@ -16,14 +17,36 @@ function createAction(config) {
     };
 
     // additional apis
-    Action.subscribe = _instance.subscribe.bind(_instance);
     Action.signature = _instance.signature;
+    Action.subscribe = _instance.subscribe.bind(_instance);
 
-    if (ActionsRegister.add(Action)) {
+    if (actionsRegister.add(Action)) {
         return Action;
     } else {
         throw new Error('Action alredy defined: ' + Action.signature);
     }
 }
 
+function createComputedAction(fn) {
+    var _instance = new ComputedActionClass();
+    _instance.init.apply(_instance, arguments);
+
+    var ComputedAction = _instance.run.bind(_instance);
+
+    // additional apis
+    ComputedAction.signature = _instance.signature;
+    ComputedAction.subscribe = _instance.subscribe.bind(_instance);
+    ComputedAction.dispose = _instance.dispose.bind(_instance);
+    ComputedAction.value = _instance.get.bind(_instance);
+
+    if (actionsRegister.add(ComputedAction)) {
+        return ComputedAction;
+    } else {
+        throw new Error('ComputedAction alredy defined: ' + ComputedAction.signature);
+    }
+
+    return ComputedAction;
+}
+
 exports.create = createAction;
+exports.createComputed = createComputedAction;

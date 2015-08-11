@@ -5,6 +5,7 @@ var actionsRegister = require('./actions-register');
 var storeFactory = require('./store-factory');
 
 exports.createAction = actionsFactory.create;
+exports.createComputedAction = actionsFactory.createComputed;
 exports.createStore = storeFactory.create;
 
 exports.trigger = actionsRegister.run;

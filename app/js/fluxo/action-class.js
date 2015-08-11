@@ -1,4 +1,6 @@
 
+var actionsLogger = require('./actions-logger');
+
 function ActionClass() {
     this.signature = '';
     this.value = '';
@@ -7,10 +9,11 @@ function ActionClass() {
 
 ActionClass.prototype.init = function(config) {
 
+    // [signature, [initialValue]]
     if (typeof config === 'string') {
         config = {
             signature: config,
-            initialValye: null
+            initialValue: arguments.length > 1 ? arguments[1] : null
         };
     }
 
@@ -19,6 +22,7 @@ ActionClass.prototype.init = function(config) {
 };
 
 ActionClass.prototype.get = function() {
+    actionsLogger.log(this.signature);
     return this.value;
 };
 

@@ -1,29 +1,28 @@
 
 var Fluxo = require('fluxo');
 
+Fluxo.createAction('set-name', 'marco');
+Fluxo.createAction('set-surname', 'peg');
+
+var fullName = Fluxo.createComputedAction('full-name', function() {
+    return Fluxo.trigger('set-name') + ' ' + Fluxo.trigger('set-surname');
+});
+
 var scoresStore = Fluxo.createStore({
     actions: [
-        'set-name',
-        'set-surname',
+        'full-name',
         'set-score'
     ],
     getInitialState() {
         return {
-            name: 'Marco',
-            surname: 'Peg',
+            name: fullName.value(),
             score: 0
         };
     },
 
-    onSetName: function(val) {
+    onFullName: function(val) {
         this.setState({
             name: val
-        });
-    },
-
-    onSetSurname: function(val) {
-        this.setState({
-            surname: val
         });
     },
 
@@ -45,7 +44,7 @@ var ageStore = Fluxo.createStore({
     ],
     getInitialState() {
         return {
-            name: 'Marco',
+            name: fullName.value(),
             age: 0
         };
     },
@@ -66,11 +65,6 @@ var ageStore = Fluxo.createStore({
 ageStore.subscribe(function(prevState) {
     console.log(this.state.name + ' age ' + this.state.age);
 });
-
-// Fluxo.trigger('set-name', 'Luke');
-// Fluxo.trigger('set-surname', 'Skywalker');
-// Fluxo.trigger('set-score', 22);
-// Fluxo.trigger('set-age', 34);
 
 Fluxo.trigger({
     'set-name': 'Luke',
