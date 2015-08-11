@@ -1,3 +1,4 @@
+require('babel/register');
 var pkg = require('./package.json');
 
 var path = require('path');
@@ -28,6 +29,7 @@ var jscsConf = require('./config/jscs.config');
 var noop = function() {};
 
 var appConf = require('./lib/app-conf');
+var jscsExplainError = require('./lib/jscs-explain-error');
 var getInitialState = require('./app/get-initial-state.iso');
 
 gulp.task('lint-js', function() {
@@ -37,6 +39,7 @@ gulp.task('lint-js', function() {
         path.join(__dirname, './app/js/**/*.jsx')
     ])
         .pipe(gulpJsxcs(jscsConf))
+        .on('error', noop)
         .pipe(notifyJscs());
 });
 
@@ -268,11 +271,16 @@ function notifyJscs() {
         if (file.jsxcs && !file.jsxcs.success) {
             var fpath = file.path.split('/');
 
+            // console.log(file.jsxcs);
+
             notifier.notify({
                 title: 'JSCS Says:',
                 message: [fpath.pop(), fpath.pop()].reverse().join('/')
             });
 
+            file.jsxcs.errors.forEach(function(error) {
+                console.log(jscsExplainError(error, true));
+            });
             // @TODO: create a report file
 
         }

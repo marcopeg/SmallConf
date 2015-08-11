@@ -19,6 +19,7 @@ function getInitialState() {
         };
 
         var _settings = get('settings').then(s => extend(state.settings, s));
+
         // var _settings = get('settings').then(s => {
         //     console.log(state);
         //     console.log(s);

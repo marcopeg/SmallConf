@@ -16,10 +16,14 @@
     "start-release": "npm run release && NODE_ENV=release node --harmony lib/server.js"
   },
   "dependencies": {
+    "babel": "^5.8.21",
     "babel-core": "^5.8.21",
     "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.20",
     "better-livereload": "^0.3.1",
     "bootstrap": "^3.3.5",
+    "camelcase": "^1.2.1",
+    "chalk": "^1.1.0",
     "compression": "^1.5.2",
     "express": "^4.13.3",
     "extend": "^3.0.0",
