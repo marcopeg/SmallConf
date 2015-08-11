@@ -7,4 +7,4 @@ var storeFactory = require('./store-factory');
 exports.createAction = actionsFactory.create;
 exports.createStore = storeFactory.create;
 
-exports.runAction = actionsRegister.run;
+exports.trigger = actionsRegister.run;

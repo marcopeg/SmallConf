@@ -85,6 +85,18 @@ StoreClass.prototype.subscribe = function(fn) {
     return ticket;
 };
 
+StoreClass.prototype.trigger = function(signature) {
+    if (this.hasAction(signature)) {
+        actionsRegister.run.apply(actionsRegister, arguments);
+    } else {
+        throw new Error('action not implemented by the store: ' + signature);
+    }
+};
+
+StoreClass.prototype.hasAction = function(signature) {
+    return Object.keys(this.actions).indexOf(signature) !== -1;
+};
+
 function getInitialState(settings) {
     if (settings.getInitialState) {
         try {
