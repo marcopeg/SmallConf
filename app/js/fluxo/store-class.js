@@ -10,6 +10,9 @@ function StoreClass() {
     this.actionsSubscriptions = [];
     this.storeSubscriptions = [];
     this.isDisposed = false;
+
+    this.__prevState = null;
+    this.__emitterTimeout;
 }
 
 StoreClass.prototype.init = function(config) {
@@ -26,6 +29,9 @@ StoreClass.prototype.dispose = function() {
 
     this.storeSubscriptions.forEach(sub => sub.dispose());
     this.storeSubscriptions = null;
+
+    this.__prevState = null;
+    this.__emitterTimeout = null;
 
     this.isDisposed = true;
 };
@@ -45,12 +51,22 @@ StoreClass.prototype.stopListen = function() {
 };
 
 StoreClass.prototype.setState = function(newState) {
-    var prevState = extend({}, this.state);
+
+    if (this.__prevState === null) {
+        this.__prevState = extend({}, this.state);
+    }
+
     this.state = extend(true, {}, this.state, newState || {});
 
-    this.storeSubscriptions
-        .filter(s => s.isActive)
-        .forEach(s => s.fn.call(this, prevState));
+    // delay to emit signals so to collect many sinchronous actions
+    clearTimeout(this.__emitterTimeout);
+    this.__emitterTimeout = setTimeout($=> {
+        this.storeSubscriptions
+            .filter(s => s.isActive)
+            .forEach(s => s.fn.call(this, this.__prevState));
+
+        this.__prevState = null;
+    });
 };
 
 StoreClass.prototype.subscribe = function(fn) {
