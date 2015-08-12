@@ -20,7 +20,7 @@ function createAction() {
     Action.signature = _instance.signature;
     Action.subscribe = _instance.subscribe.bind(_instance);
     Action.fire = _instance.set.bind(_instance);
-    ComputedAction.value = _instance.get.bind(_instance);
+    Action.value = _instance.get.bind(_instance);
 
     if (actionsRegister.add(Action)) {
         return Action;

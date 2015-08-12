@@ -1,4 +1,4 @@
-require('babel/register');
+var path = require('path');
 var pkg = require('./package.json');
 
 var path = require('path');
@@ -28,6 +28,7 @@ var jscsConf = require('./config/jscs.config');
 
 var noop = function() {};
 
+var workspaceConf = require('./lib/workspace-conf');
 var appConf = require('./lib/app-conf');
 var jscsExplainError = require('./lib/jscs-explain-error');
 var getInitialState = require('./app/get-initial-state.iso');
@@ -164,7 +165,7 @@ function html4develop() {
         var source = String(file.contents);
         var template = hogan.compile(source);
 
-        if (false) {
+        if (workspaceConf.build.isomorphic) {
             getInitialState().then(function(initialState) {
                 var appBuild = require('./builds/develop/smallconf');
                 var appMarkup = appBuild.renderMarkup(initialState);
@@ -209,7 +210,7 @@ function html4release() {
         var source = String(file.contents);
         var template = hogan.compile(source);
 
-        if (true) {
+        if (workspaceConf.release.isomorphic) {
             getInitialState().then(function(initialState) {
                 var appBuild = require('./builds/release/smallconf_' + pkg.version);
                 var appMarkup = appBuild.renderMarkup(initialState);

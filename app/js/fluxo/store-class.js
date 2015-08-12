@@ -53,13 +53,17 @@ StoreClass.prototype.stopListen = function() {
     this.actionsSubscriptions = [];
 };
 
+StoreClass.prototype.applyState = function(newState) {
+    this.state = extend(true, {}, this.state, newState || {});
+};
+
 StoreClass.prototype.setState = function(newState) {
 
     if (this.__prevState === null) {
         this.__prevState = extend({}, this.state);
     }
 
-    this.state = extend(true, {}, this.state, newState || {});
+    this.applyState(newState);
 
     // delay to emit signals so to collect many sinchronous actions
     clearTimeout(this.__emitterTimeout);
