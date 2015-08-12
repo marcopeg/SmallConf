@@ -1,10 +1,11 @@
+
 var path = require('path');
 
 module.exports = {
     externals: {
         react: 'React',
         firebase: 'Firebase',
-        settings : 'AppSettings'
+        settings: 'AppSettings'
     },
     resolve: {
         extensions: ['', '.js', '.jsx'],

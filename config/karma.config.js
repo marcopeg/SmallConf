@@ -4,9 +4,9 @@ var webpackConfig = require('./webpack.config');
 module.exports = function(config) {
     config.set({
 
-    // base path that will be used to resolve all patterns (eg. files, exclude)
+        // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: path.resolve(path.join(__dirname, '../')),
-        
+
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
         frameworks: ['es5-shim', 'mocha', 'chai', 'sinon'],
@@ -14,15 +14,16 @@ module.exports = function(config) {
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: ['PhantomJS'],
-        
+
         // test results reporter to use
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
         reporters: [
             'progress',
-            // 'coverage', 
+
+            // 'coverage',
             'osx'
         ],
-        
+
         // configure the way Karma reports the code coverage analysys
         // coverageReporter: {
         //     reporters: [
@@ -38,15 +39,15 @@ module.exports = function(config) {
             'app/assets/**/*.js',
             'app/**/*.spec.js'
         ],
-        
+
         // list of files to exclude
         exclude: [],
-        
+
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         // IMPORTANT: this list is automatically filled up by Workspace
         preprocessors: {
-            'app/**/*.spec.js' : ['webpack']
+            'app/**/*.spec.js': ['webpack']
         },
 
         webpack: webpackConfig,
@@ -57,7 +58,7 @@ module.exports = function(config) {
         osxReporter: {
             notificationMode: 'change'
         },
-        
+
         // web server port
         port: 9876,
 
@@ -70,10 +71,10 @@ module.exports = function(config) {
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: true,
-        
+
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
         logLevel: config.LOG_WARN
-        
+
     });
 };
