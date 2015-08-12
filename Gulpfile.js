@@ -7,6 +7,7 @@ var extend = require('extend');
 var webpack = require('webpack');
 var hogan = require('hogan.js');
 var notifier = require('node-notifier');
+var karma = require('karma');
 
 var gulp = require('gulp');
 var gulpWebpack = require('webpack-stream');
@@ -19,7 +20,7 @@ var gulpLesshint = require('gulp-lesshint');
 var gulpLesshintStylish = require('gulp-lesshint-stylish');
 var gulpJsxcs = require('gulp-jsxcs');
 
-var LessPluginCleanCSS = require('less-plugin-clean-css')
+var LessPluginCleanCSS = require('less-plugin-clean-css');
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
 
 var webpackConfig = require('./config/webpack.config');
@@ -38,6 +39,20 @@ gulp.task('lint-js', function() {
         path.join(__dirname, './app/*.js'),
         path.join(__dirname, './app/js/**/*.js'),
         path.join(__dirname, './app/js/**/*.jsx')
+    ])
+        .pipe(gulpJsxcs(jscsConf))
+        .on('error', noop)
+        .pipe(notifyJscs());
+});
+
+gulp.task('lint-all', function() {
+    return gulp.src([
+        './**/*.js',
+        './**/*.jsx',
+        '!./node_modules/**/*.js',
+        '!./node_modules/**/*.jsx',
+        '!./app/assets/**/*',
+        '!./builds/**/*'
     ])
         .pipe(gulpJsxcs(jscsConf))
         .on('error', noop)
@@ -159,6 +174,22 @@ gulp.task('release-html', ['release-less', 'release-js'], function() {
         .pipe(gulp.dest(path.join(__dirname, 'builds/release')));
 });
 
+var karmaServer;
+gulp.task('start-karma', function() {
+    karmaServer = new karma.Server({
+        configFile: path.join(__dirname, 'config', 'karma.config.js'),
+        singleRun: false,
+        autoWatch: true
+    });
+    karmaServer.start();
+});
+
+gulp.task('run-karma', function() {
+    if (karmaServer) {
+        karmaServer.run();
+    }
+});
+
 function html4develop() {
     var _stream = new stream.Transform({objectMode: true});
     _stream._transform = function(file, unused, callback) {
@@ -184,11 +215,11 @@ function html4develop() {
 
         function _render(initialState, appMarkup) {
             var data = {
-                'firebaseUrl' : appConf.firebaseUrl,
-                'html' : appMarkup,
-                'cfg' : JSON.stringify(initialState),
-                'css' : '<link rel="stylesheet" href="./smallconf.css" />',
-                'js' : [
+                firebaseUrl: appConf.firebaseUrl,
+                html: appMarkup,
+                cfg: JSON.stringify(initialState),
+                css: '<link rel="stylesheet" href="./smallconf.css" />',
+                js: [
                     '<script src="./react/dist/react-with-addons.js"></script>',
                     '<script src="./firebase.js"></script>',
                     '<script src="./smallconf.js"></script>'
@@ -200,7 +231,9 @@ function html4develop() {
         }
 
     };
+
     return _stream;
+
 }
 
 // release will render an isomorphic app
@@ -229,11 +262,11 @@ function html4release() {
 
         function _render(initialState, appMarkup) {
             var data = {
-                'firebaseUrl' : appConf.firebaseUrl,
-                'html' : appMarkup,
-                'cfg' : JSON.stringify(initialState),
-                'css' : '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
-                'js' : [
+                firebaseUrl: appConf.firebaseUrl,
+                html: appMarkup,
+                cfg: JSON.stringify(initialState),
+                css: '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" inline />',
+                js: [
                     '<script src="../../app/assets/firebase.js" inline></script>',
                     '<script src="../../node_modules/react/dist/react-with-addons.min.js" inline></script>',
                     '<script src="./smallconf_' + pkg.version + '.js" inline></script>'
@@ -243,7 +276,9 @@ function html4release() {
             file.contents = new Buffer(template.render(data));
             callback(null, file);
         }
+
     };
+
     return _stream;
 }
 
@@ -261,8 +296,10 @@ function notifyLesshint() {
             // @TODO: create a report file
 
         }
+
         callback(null, file);
     };
+
     return _stream;
 }
 
@@ -282,11 +319,14 @@ function notifyJscs() {
             file.jsxcs.errors.forEach(function(error) {
                 console.log(jscsExplainError(error, true));
             });
+
             // @TODO: create a report file
 
         }
+
         callback(null, file);
     };
+
     return _stream;
 }
 
@@ -301,6 +341,13 @@ gulp.task('watch', ['build'], function() {
 });
 
 gulp.task('watch-lint', function() {
-    gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['lint-js']);
+    gulp.watch([
+        './**/*.js', '!./node_modules/**/*.js',
+        './**/*.jsx', '!./node_modules/**/*.jsx'
+    ], ['lint-js']);
     gulp.watch('./app/**/*.less', ['lint-less']);
+});
+
+gulp.task('start-tdd', ['start-karma'], function() {
+    gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['run-karma']);
 });

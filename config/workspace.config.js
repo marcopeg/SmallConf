@@ -1,9 +1,9 @@
 
 module.exports = {
-	build: {
-		isomorphic: false
-	},
-	release: {
-		isomorphic: true
-	}
+    build: {
+        isomorphic: false
+    },
+    release: {
+        isomorphic: true
+    }
 };
