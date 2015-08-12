@@ -7,18 +7,20 @@ function ActionClass() {
     this.subscriptions = [];
 }
 
-ActionClass.prototype.init = function(config) {
+ActionClass.prototype.init = function(config, arg1) {
 
-    // [signature, [initialValue]]
+    // [signature, [initialValue | fn]]
     if (typeof config === 'string') {
         config = {
             signature: config,
-            initialValue: arguments.length > 1 ? arguments[1] : null
+            initialValue: typeof arg1 !== 'function' ? arg1 : null,
+            fn: typeof arg1 === 'function' ? arg1 : null
         };
     }
 
     this.signature = config.signature;
     this.value = config.initialValue;
+    this.fn = config.fn;
 };
 
 ActionClass.prototype.get = function() {
@@ -27,10 +29,17 @@ ActionClass.prototype.get = function() {
 };
 
 ActionClass.prototype.set = function(value) {
-    this.value = value;
+    if (typeof this.fn === 'function') {
+        this.value = this.fn.apply(this, arguments);
+    } else {
+        this.value = value;
+    }
+
     this.subscriptions
         .filter(s => s.isActive)
         .forEach(s => s.fn.apply(this, arguments));
+
+    return this.value;
 };
 
 ActionClass.prototype.subscribe = function(fn) {

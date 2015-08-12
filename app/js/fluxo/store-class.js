@@ -85,7 +85,7 @@ StoreClass.prototype.subscribe = function(fn) {
     return ticket;
 };
 
-StoreClass.prototype.trigger = function(signature) {
+StoreClass.prototype.fire = function(signature) {
     if (this.hasAction(signature)) {
         actionsRegister.run.apply(actionsRegister, arguments);
     } else {

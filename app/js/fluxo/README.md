@@ -87,8 +87,8 @@ Then you can start to **change the state by firing actions**:
 	React.createClass({
       ...
       onClick() {
-        myStore.trigger('set-name', 'Darth');
-        myStore.trigger('set-surname', 'Vader');
+        myStore.fire('set-name', 'Darth');
+        myStore.fire('set-surname', 'Vader');
       },
       render() {
         return <button onClick={this.onClick}>turn to the dark side</button>;
@@ -140,9 +140,90 @@ Another implication is that you can retrive a reference to an existing action fr
     
 You can also use the global scope to fire an action:
 
-    Fluxo.trigger('set-name', 'Darth');
+    Fluxo.fire('set-name', 'Darth');
     
 Actually `Fluxo` itself behaves as dispatcher in the _Flux_ echosystem.
+
+### get / set / fire
+
+An action acts like a `getter/setter` object. When you call an action without arguments you read it's current value, when you call an action with one or more aguments you fire the action:
+
+    var myAction = Fluxo.createAction('my-action', 'foo');
+    
+    // getter
+    myAction() -> return "foo"
+    
+    // setter
+    myAction('faa') -> change value to "faa" && return "faa"
+    
+**NOTE:** Only the `setter` behavior will propagate notifications.
+
+If you need to invoke an action without arguments you can fire it:
+
+    myAction.fire();
+    
+When you fire and action from the global interface you always refer to it's _setter_ behavior:
+
+    Fluxo.fire('my-action');
+    
+If you need to read the action value from the global interface you shoud:
+
+	Fluxo.getAction('my-action').value();
+
+### Action Implementation
+
+An action can define a piece of logic that takes the input arguments and uses them to calculate the current value:
+
+    var setFullName = Fluxo.createAction({
+      signature: 'set-full-name',
+      fn: function(name, surname) {
+        return name + ' ' + surname;
+      }
+    });
+
+An action implementation is synchronous by nature and `Fluxo` does not provide any metods to handle asynchronous operations. 
+
+### Asynchronous Actions
+
+> If you want to handle asynchronous operation you should just compose 
+> different actions exactly the way you do in the real world!
+
+	// async states actions
+	var loadPostsSuccess = Fluxo.createAction('load-posts-success');
+	var loadPostsFailed = Fluxo.createAction('load-posts-failed');
+	var loadPostsDone = Fluxo.createAction('load-posts-done');
+	
+	// driver action
+	Fluxo.createAction('load-posts', function() {
+	  $.get('/posts)
+	    .success(loadPostsSuccess)
+	    .error(loadPostsFailed)
+	    .always(loadPostsDone)
+	});
+	
+	// store implementation
+	...
+	onLoadPosts() {
+	  this.setState({isLoading: true});
+	},
+	onLoadPostsDone() {
+	  this.setState({isLoading: false});
+	},
+	onLoadPostsSuccess(posts) {
+	  this.setState({posts: posts});
+	},
+	onLoadPostsFailed(err) {
+	  this.setState({
+	  	postsHasError: true, 
+	  	errorMessage: err.message
+	  });
+	}
+	
+	// view implementation
+	...
+	onClick() {
+		Fluxo.fire('load-posts');
+	}
 
 
 ## Computed Actions
