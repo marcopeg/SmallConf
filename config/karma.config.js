@@ -46,7 +46,7 @@ module.exports = function(config) {
         files: [
             'node_modules/react/dist/react.js',
             'app/assets/**/*.js',
-            'app/**/*.spec.js'
+            'app/**/specs/*.spec.js'
         ],
 
         // list of files to exclude

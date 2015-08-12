@@ -29,6 +29,33 @@ This script runs the transpiler in _watch_ mode, a development server that uses 
 
 Open your browser and go to `http://localhost:8080` to run the app on your local machine!
 
+### Test
+
+You can run all the unit tests by:
+	
+	// run test one shot
+    npm test
+    
+During your normal activity with `npm start` all the available tests are being executed
+every time you save a file and a _KarmaJS_ server is available to connect to and debug your tests using any browser:
+	
+	// connect to karma server
+    http://localhost:9876
+    
+The test suite is composed by:
+
+- KarmaJS
+- MochaJS
+- ChaiJS
+- SinonJS
+
+All the unit tests should follow the following naming convention:
+
+    /{module-name}/specs/{test-name}.spec.js
+    
+Inside every test you can require all the files you need using a local path.
+
+
 ### Release
 
 	# test a release locally
