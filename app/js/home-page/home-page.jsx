@@ -5,6 +5,8 @@ var Well = require('react-bootstrap/lib/Well');
 var Button = require('react-bootstrap/lib/Button');
 var GoogleMap = require('./google-map');
 
+var Speakers = require('./speakers');
+
 module.exports = React.createClass({
     getDefaultProps() {
         return {
@@ -50,6 +52,9 @@ module.exports = React.createClass({
                         <Button bsStyle="link" onClick={this._toggleGmap}>{this.props.confAddress}</Button>
                     </p>
                     {gmap}
+
+                    <Speakers />
+
                 </div>
             </Grid>
         );

@@ -8,12 +8,12 @@
     "start": "node --harmony ./node_modules/pm2/bin/pm2-dev run ./processes.json",
     "lint": "node --harmony ./node_modules/gulp/bin/gulp.js lint",
     "build": "node --harmony ./node_modules/gulp/bin/gulp.js build",
-    "release": "node --harmony ./node_modules/gulp/bin/gulp.js release",
     "watch": "node --harmony ./node_modules/gulp/bin/gulp.js watch",
     "watch-lint": "node --harmony ./node_modules/gulp/bin/gulp.js watch-lint",
-    "server": "node --harmony lib/server.js",
-    "server-release": "NODE_ENV=release node --harmony lib/server.js",
-    "start-release": "npm run release && NODE_ENV=release node --harmony lib/server.js"
+    "start-server": "node --harmony lib/server.js",
+    "release": "node --harmony ./node_modules/gulp/bin/gulp.js release",
+    "start-release": "npm run release && NODE_ENV=release node --harmony lib/server.js",
+    "start-server-release": "NODE_ENV=release node --harmony lib/server.js"
   },
   "dependencies": {
     "babel": "^5.8.21",
@@ -25,6 +25,7 @@
     "camelcase": "^1.2.1",
     "chalk": "^1.1.0",
     "compression": "^1.5.2",
+    "decamelize": "^1.0.0",
     "express": "^4.13.3",
     "extend": "^3.0.0",
     "firebase": "^2.2.9",
