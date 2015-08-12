@@ -196,9 +196,12 @@ function html4develop() {
         var source = String(file.contents);
         var template = hogan.compile(source);
 
+        var moduleName = require.resolve('./builds/develop/smallconf');
+        delete require.cache[moduleName];
+
         if (workspaceConf.build.isomorphic) {
             getInitialState().then(function(initialState) {
-                var appBuild = require('./builds/develop/smallconf');
+                var appBuild = require(moduleName);
                 var appMarkup = appBuild.renderMarkup(initialState);
                 _render(initialState, appMarkup);
             }).catch(function(err) {
@@ -337,7 +340,7 @@ gulp.task('release', ['release-js', 'release-less', 'release-html']);
 gulp.task('watch', ['build'], function() {
     gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['build-js']);
     gulp.watch('./app/**/*.less', ['build-less']);
-    gulp.watch('./app/**/*.html', ['build-html']);
+    gulp.watch(['./app/**/*.html', './app/*.js'], ['build-html']);
 });
 
 gulp.task('watch-lint', function() {
