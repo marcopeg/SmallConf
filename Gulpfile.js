@@ -7,6 +7,7 @@ var extend = require('extend');
 var webpack = require('webpack');
 var hogan = require('hogan.js');
 var notifier = require('node-notifier');
+var karma = require('karma');
 
 var gulp = require('gulp');
 var gulpWebpack = require('webpack-stream');
@@ -159,6 +160,22 @@ gulp.task('release-html', ['release-less', 'release-js'], function() {
         .pipe(gulp.dest(path.join(__dirname, 'builds/release')));
 });
 
+var karmaServer;
+gulp.task('start-karma', function() {
+    karmaServer = new karma.Server({
+        configFile: path.join(__dirname, 'config', 'karma.config.js'),
+        singleRun: false,
+        autoWatch: true
+    });
+    karmaServer.start();
+});
+
+gulp.task('run-karma', function() {
+    if (karmaServer) {
+        karmaServer.run();
+    }
+});
+
 function html4develop() {
     var _stream = new stream.Transform({objectMode: true});
     _stream._transform = function(file, unused, callback) {
@@ -303,4 +320,8 @@ gulp.task('watch', ['build'], function() {
 gulp.task('watch-lint', function() {
     gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['lint-js']);
     gulp.watch('./app/**/*.less', ['lint-less']);
+});
+
+gulp.task('start-tdd', ['start-karma'], function() {
+    gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['run-karma']);
 });
