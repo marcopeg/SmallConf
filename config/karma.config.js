@@ -1,5 +1,15 @@
 var path = require('path');
-var webpackConfig = require('./webpack.config');
+var extend = require('extend');
+
+var webpackConfig = extend(true, {}, require('./webpack.config'), {
+    module: {
+        postLoaders: [{
+            test: /\.jsx?$/,
+            exclude: /(node_modules|specs)\//,
+            loader: 'istanbul-instrumenter'
+        }]
+    }
+});
 
 module.exports = function(config) {
     config.set({
@@ -19,18 +29,17 @@ module.exports = function(config) {
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
         reporters: [
             'progress',
-
-            // 'coverage',
+            'coverage',
             'osx'
         ],
 
         // configure the way Karma reports the code coverage analysys
-        // coverageReporter: {
-        //     reporters: [
-        //         { type: 'html', dir: 'coverage' },
-        //         { type: 'text-summary'}
-        //     ]
-        // },
+        coverageReporter: {
+            reporters: [
+                { type: 'html', dir: 'builds/reports' },
+                { type: 'text-summary'}
+            ]
+        },
 
         // list of files / patterns to load in the browser
         // IMPORTANT: this list is automatically filled up by Workspace
