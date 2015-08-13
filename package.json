@@ -17,7 +17,8 @@
     "test": "./node_modules/karma/bin/karma start config/karma.config.js",
     "karma-server": "node --harmony ./node_modules/gulp/bin/gulp.js start-karma",
     "karma": "./node_modules/karma/bin/karma run",
-    "tdd": "node --harmony ./node_modules/gulp/bin/gulp.js start-tdd"
+    "tdd": "node --harmony ./node_modules/gulp/bin/gulp.js start-tdd",
+    "kill": "kill -9 `ps aux | grep node | grep -v grep | awk '{print $2}'`"
   },
   "dependencies": {
     "babel": "^5.8.21",
