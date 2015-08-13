@@ -12,8 +12,4 @@
 	"script" : "./node_modules/gulp/bin/gulp.js",
 	"name" : "Linter",
 	"args" : "watch-lint --harmony"
-},{
-	"script" : "./node_modules/gulp/bin/gulp.js",
-	"name" : "TestSuite",
-	"args" : "start-tdd --harmony"
 }]
