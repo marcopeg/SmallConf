@@ -1,8 +1,9 @@
 var path = require('path');
 var extend = require('extend');
 
-console.log(__dirname);
-var webpackConfig = extend(true, {}, require('./webpack.config'), {
+var webpackConfigFile = path.join(__dirname, 'webpack.config.js');
+console.log(webpackConfigFile);
+var webpackConfig = extend(true, {}, require(webpackConfigFile), {
     module: {
         postLoaders: [{
             test: /\.jsx?$/,
