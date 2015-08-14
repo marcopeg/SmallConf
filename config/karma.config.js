@@ -1,6 +1,7 @@
 var path = require('path');
 var extend = require('extend');
 
+console.log(__dirname);
 var webpackConfig = extend(true, {}, require('./webpack.config'), {
     module: {
         postLoaders: [{
