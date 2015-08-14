@@ -34,26 +34,31 @@ var appConf = require('./lib/app-conf');
 var jscsExplainError = require('./lib/jscs-explain-error');
 var getInitialState = require('./app/get-initial-state.iso');
 
+var JS2LINT = [
+    path.join(__dirname, './app/*.js'),
+    path.join(__dirname, './app/js/**/*.js'),
+    path.join(__dirname, './app/js/**/*.jsx')
+];
+
+var JS2LINT_ALL = [
+    path.join(__dirname, './*.js'),
+    path.join(__dirname, './lib/**/*.js'),
+    path.join(__dirname, './config/**/*.js')
+].concat(JS2LINT);
+
+var LESS2LINT = [
+    path.join(__dirname, './app/**/*.less')
+];
+
 gulp.task('lint-js', function() {
-    return gulp.src([
-        path.join(__dirname, './app/*.js'),
-        path.join(__dirname, './app/js/**/*.js'),
-        path.join(__dirname, './app/js/**/*.jsx')
-    ])
+    return gulp.src(JS2LINT)
         .pipe(gulpJsxcs(jscsConf))
         .on('error', noop)
         .pipe(notifyJscs());
 });
 
-gulp.task('lint-all', function() {
-    return gulp.src([
-        './**/*.js',
-        './**/*.jsx',
-        '!./node_modules/**/*.js',
-        '!./node_modules/**/*.jsx',
-        '!./app/assets/**/*',
-        '!./builds/**/*'
-    ])
+gulp.task('lint-all-js', function() {
+    return gulp.src(JS2LINT_ALL)
         .pipe(gulpJsxcs(jscsConf))
         .on('error', noop)
         .pipe(notifyJscs());
@@ -122,7 +127,7 @@ gulp.task('release-assets', function() {
 });
 
 gulp.task('lint-less', function() {
-    return gulp.src(path.join(__dirname, './app/*.less'))
+    return gulp.src(LESS2LINT)
         .pipe(gulpLesshint())
         .on('error', noop)
         .pipe(notifyLesshint())
@@ -334,6 +339,7 @@ function notifyJscs() {
 }
 
 gulp.task('lint', ['lint-js', 'lint-less']);
+gulp.task('lint-all', ['lint-all-js', 'lint-less']);
 gulp.task('build', ['build-js', 'build-less', 'build-html']);
 gulp.task('release', ['release-js', 'release-less', 'release-html']);
 
@@ -344,11 +350,8 @@ gulp.task('watch', ['build'], function() {
 });
 
 gulp.task('watch-lint', function() {
-    gulp.watch([
-        './**/*.js', '!./node_modules/**/*.js',
-        './**/*.jsx', '!./node_modules/**/*.jsx'
-    ], ['lint-js']);
-    gulp.watch('./app/**/*.less', ['lint-less']);
+    gulp.watch(JS2LINT, ['lint-js']);
+    gulp.watch(LESS2LINT, ['lint-less']);
 });
 
 gulp.task('start-tdd', ['start-karma'], function() {
