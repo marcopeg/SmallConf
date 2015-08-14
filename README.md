@@ -7,6 +7,8 @@ It is based on `ReactJS` and stores data in `FireSlide`. There is no "server sid
 
 Enjoy it!
 
+![TravisCI Build](https://travis-ci.org/marcopeg/SmallConf.svg?branch=master)
+
 ## Work on it!
 
 ### Requirements
