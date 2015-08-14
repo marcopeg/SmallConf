@@ -73,7 +73,7 @@ gulp.task('build-js', function() {
                 }
             })
         ],
-        devtool: 'inline-source-map',
+        devtool: 'source-map',
         debug: true
     });
     return gulp.src([
@@ -139,12 +139,12 @@ gulp.task('build-less', ['build-assets'], function() {
 
     });
     return gulp.src(path.join(__dirname, './app/*.less'))
-        .pipe(gulpSourcemaps.init())
-        .pipe(gulpLess(conf))
-        .pipe(gulpSourcemaps.write())
         .pipe(gulpRename(function(path) {
             path.basename = 'smallconf';
         }))
+        .pipe(gulpSourcemaps.init())
+        .pipe(gulpLess(conf))
+        .pipe(gulpSourcemaps.write('./'))
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop')));
 });
 
