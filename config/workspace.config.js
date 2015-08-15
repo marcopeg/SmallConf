@@ -1,9 +1,11 @@
 
 module.exports = {
     build: {
-        isomorphic: false
+        isomorphic: false,
+        compressionLevel: 9
     },
     release: {
-        isomorphic: true
+        isomorphic: true,
+        compressionLevel: 9
     }
 };
