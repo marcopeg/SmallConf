@@ -9,6 +9,7 @@ var hogan = require('hogan.js');
 var notifier = require('node-notifier');
 var karma = require('karma');
 var fs = require('fs-extra');
+var del = require('del');
 
 var gulp = require('gulp');
 var gulpIf = require('gulp-if');
@@ -126,6 +127,12 @@ gulp.task('build-assets', function() {
         path.join(__dirname, 'app', 'assets', '**/*')
     ])
         .pipe(gulp.dest(path.join(__dirname, 'builds/develop/assets')));
+});
+
+gulp.task('clear-release', function(done) {
+    del([path.join(__dirname, 'builds/release/**/*')], {
+        force: true
+    }, done)
 });
 
 gulp.task('release-assets', function() {
@@ -383,7 +390,7 @@ function notifyJscs() {
 gulp.task('lint', ['lint-js', 'lint-less']);
 gulp.task('lint-all', ['lint-all-js', 'lint-less']);
 gulp.task('build', ['build-js', 'build-less', 'build-html']);
-gulp.task('release', ['release-js', 'release-less', 'release-html']);
+gulp.task('release', ['clear-release', 'release-js', 'release-less', 'release-html']);
 
 gulp.task('watch', ['build'], function() {
     gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['build-js']);
