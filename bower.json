@@ -1,0 +1,22 @@
+{
+  "name": "SmallConf",
+  "version": "0.0.0",
+  "homepage": "https://github.com/marcopeg/SmallConf",
+  "authors": [
+    "Marco Pegoraro <marco.pegoraro@gmail.com>"
+  ],
+  "moduleType": [
+    "es6"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "firebase": "~2.2.9"
+  }
+}

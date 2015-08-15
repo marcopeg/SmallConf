@@ -1,4 +1,5 @@
 node_modules/
+bower_components/
 builds/
 npm-debug.log
 config/app.config.local.js
