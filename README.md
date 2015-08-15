@@ -20,7 +20,8 @@ After you clone the repository you should run a simple `npm install` to download
 
 ### Setup your Firebase
 
-[to be continued...]
+- open `settings/app.settings.js`
+- set your firebase url in key `firebaseUrl`
 
 ### Development
 
@@ -62,6 +63,27 @@ Inside every test you can require all the files you need using a local path.
 
 	# test a release locally
 	npm run start-release
+
+## Settings
+
+### Workspace
+
+	config/workspace.config.js
+	
+Those settings are used to build the projects. 
+There are a distinct set of settings for the development process and the release.
+
+> You can create a local develompent setting file which will not 
+> be part of your commits: `config/workspace.config.local.js`
+
+### Application
+
+	config/app.config.js
+	
+Those settings are part of the initial state of the application.
+
+> You can create a local develompent setting file which will not 
+> be part of your commits: `config/app.config.local.js`
 
 ## Contribute
 
