@@ -2,7 +2,9 @@
 module.exports = {
     build: {
         isomorphic: false,
-        compressionLevel: 9,
+        server: {
+            compressionLevel: 0,
+        },
         libs: [
             'bower_components/firebase/firebase-debug.js',
             'node_modules/react/dist/react-with-addons.js'
@@ -10,21 +12,26 @@ module.exports = {
     },
     release: {
         isomorphic: true,
-        compressionLevel: 9,
+        server: {
+            compressionLevel: 9,
+        },
         webpack: {
             dedupe: true,
-            uglify: false,
+            uglify: true,
             debug: false
         },
         inline: {
-            css: false,
-            js: false,
-            libs: false,
-            assets: false
+            css: true,
+            js: true,
+            libs: true,
+            assets: true
         },
         libs: [
             'bower_components/firebase/firebase.js',
             'node_modules/react/dist/react-with-addons.min.js'
+        ],
+        assets: [
+            'node_modules/bootstrap/fonts'
         ]
     }
 };

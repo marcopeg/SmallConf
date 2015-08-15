@@ -8,6 +8,7 @@ var webpack = require('webpack');
 var hogan = require('hogan.js');
 var notifier = require('node-notifier');
 var karma = require('karma');
+var fs = require('fs-extra');
 
 var gulp = require('gulp');
 var gulpIf = require('gulp-if');
@@ -310,6 +311,21 @@ function html4release() {
             file.contents = new Buffer(template.render(data));
             callback(null, file);
         }
+
+        // copy libs into release folder
+        workspaceConf.release.libs.forEach(function(lib) {
+            var source = path.join(__dirname, lib);
+            lib = lib.replace('node_modules', '').replace('bower_components', '');
+            var dest = path.join(__dirname, 'builds', 'release', lib);
+            fs.copySync(source, dest);
+        });
+
+        workspaceConf.release.assets.forEach(function(lib) {
+            var source = path.join(__dirname, lib);
+            lib = lib.replace('node_modules', '').replace('bower_components', '');
+            var dest = path.join(__dirname, 'builds', 'release', lib);
+            fs.copySync(source, dest);
+        });
 
     };
 
