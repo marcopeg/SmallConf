@@ -133,7 +133,7 @@ gulp.task('build-assets', function() {
 gulp.task('clear-release', function(done) {
     del([path.join(__dirname, 'builds/release/**/*')], {
         force: true
-    }, done)
+    }, done);
 });
 
 gulp.task('release-assets', function() {
@@ -240,17 +240,17 @@ function html4develop() {
 
         function _render(initialState, appMarkup) {
 
-            var js = ['<script src="./smallconf.js"></script>'];
+            var js = ['<script src="/smallconf.js"></script>'];
             workspaceConf.build.libs.forEach(function(lib) {
                 lib = lib.replace('node_modules', '').replace('bower_components', '');
-                js.unshift('<script src=".' + lib + '"></script>');
+                js.unshift('<script src="' + lib + '"></script>');
             });
 
             var data = {
                 firebaseUrl: appConf.firebaseUrl,
                 html: appMarkup,
                 cfg: JSON.stringify(initialState),
-                css: '<link rel="stylesheet" href="./smallconf.css" />',
+                css: '<link rel="stylesheet" href="/smallconf.css" />',
                 js: js.join('\n    ')
             };
 
@@ -296,7 +296,13 @@ function html4release() {
                 libsRelative: workspaceConf.release.inline.libs ? '../../' : './'
             };
 
-            var js = ['<script src="./smallconf_' + pkg.version + '.js" ' + inline.js + '></script>'];
+            var js;
+            if (workspaceConf.release.inline.js) {
+                js = ['<script src="./smallconf_' + pkg.version + '.js" ' + inline.js + '></script>'];
+            } else {
+                js = ['<script src="/smallconf_' + pkg.version + '.js" ' + inline.js + '></script>'];
+            }
+
             if (workspaceConf.release.inline.libs) {
                 workspaceConf.release.libs.forEach(function(lib) {
                     js.unshift('<script src="../../' + lib + '" inline></script>');
@@ -304,15 +310,22 @@ function html4release() {
             } else {
                 workspaceConf.release.libs.forEach(function(lib) {
                     lib = lib.replace('node_modules', '').replace('bower_components', '');
-                    js.unshift('<script src=".' + lib + '"></script>');
+                    js.unshift('<script src="' + lib + '"></script>');
                 });
+            }
+
+            var css;
+            if (workspaceConf.release.inline.libs) {
+                css = '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" ' + inline.css + ' />';
+            } else {
+                css = '<link rel="stylesheet" href="/smallconf_' + pkg.version + '.css" ' + inline.css + ' />';
             }
 
             var data = {
                 firebaseUrl: appConf.firebaseUrl,
                 html: appMarkup,
                 cfg: JSON.stringify(initialState),
-                css: '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" ' + inline.css + ' />',
+                css: css,
                 js: js.join('\n    ')
             };
 
