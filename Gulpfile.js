@@ -22,6 +22,7 @@ var gulpInlineSource = require('gulp-inline-source');
 var gulpLesshint = require('gulp-lesshint');
 var gulpLesshintStylish = require('gulp-lesshint-stylish');
 var gulpJsxcs = require('gulp-jsxcs');
+var gulpWatch = require('gulp-watch');
 
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 var cleanCss = new LessPluginCleanCSS({ advanced: true });
@@ -393,16 +394,31 @@ gulp.task('build', ['build-js', 'build-less', 'build-html']);
 gulp.task('release', ['clear-release', 'release-js', 'release-less', 'release-html']);
 
 gulp.task('watch', ['build'], function() {
-    gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['build-js']);
-    gulp.watch('./app/**/*.less', ['build-less']);
-    gulp.watch(['./app/**/*.html', './app/*.js'], ['build-html']);
+    gulpWatch(['./app/**/*.js', './app/**/*.jsx'], function() {
+        gulp.start('build-js');
+    });
+
+    gulpWatch(['./app/**/*.less'], function() {
+        gulp.start('build-less');
+    });
+
+    gulpWatch(['./app/**/*.html', './app/*.js'], function() {
+        gulp.start('build-html');
+    });
 });
 
 gulp.task('watch-lint', function() {
-    gulp.watch(JS2LINT, ['lint-js']);
-    gulp.watch(LESS2LINT, ['lint-less']);
+    gulpWatch(JS2LINT, function() {
+        gulp.start('lint-js');
+    });
+
+    gulpWatch(LESS2LINT, function() {
+        gulp.start('lint-less');
+    });
 });
 
 gulp.task('start-tdd', ['start-karma'], function() {
-    gulp.watch(['./app/**/*.js', './app/**/*.jsx'], ['run-karma']);
+    gulp.watch(['./app/**/*.js', './app/**/*.jsx'], function() {
+        gulp.start('run-karma');
+    });
 });
