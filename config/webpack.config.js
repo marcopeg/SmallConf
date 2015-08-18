@@ -23,14 +23,9 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js?$/,
-                exclude: /(node_modules|bower_components)/,
-                loader: 'babel-loader?optional[]=runtime'
-            },
-            {
                 test: /\.jsx?$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'babel-loader?optional[]=runtime'
+                loader: 'babel-loader?optional[]=runtime&optional[]=es7.classProperties'
             }
         ]
     }
