@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
 
 var store = createStore((state, action) => {
     switch (action.type) {
@@ -58,11 +59,41 @@ class ActivePage extends React.Component {
     }
 }
 
+class AppComponent extends React.Component {
+    navigate = (e) => {
+        e.preventDefault();
+        var { dispatch } = this.props;
+        var uri = e.target.href.split('/').pop();
+        dispatch(changePage(uri));
+    }
+    render() {
+        return (
+            <div className="container">
+                <p style={{marginTop:20}}>
+                    <a href="/page1" onClick={this.navigate}>Page1</a>
+                    <span> | </span>
+                    <a href="/page2" onClick={this.navigate}>Page2</a>
+                    <span> | </span>
+                    <a href="/page3" onClick={this.navigate}>Page3</a>
+                </p>
+                <hr />
+                <ActivePage {...this.props} />
+            </div>
+        );
+    }
+}
+
+var App = connect(s => s)(AppComponent);
+
 
 // client side startup
 exports.start = function(initialState, fireBase) {
     var state = store.getState();
-    React.render(<ActivePage {...state} />, document.getElementById('app'));
+    React.render((
+        <Provider store={store}>
+            {$=> <App />}
+        </Provider>
+    ), document.getElementById('app'));
 };
 
 // server side rendering
