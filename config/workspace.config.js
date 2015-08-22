@@ -1,7 +1,7 @@
 
 module.exports = {
     build: {
-        isomorphic: false,
+        isomorphic: true,
         server: {
             compressionLevel: 0,
         },

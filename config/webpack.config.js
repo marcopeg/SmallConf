@@ -25,7 +25,14 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'babel-loader?optional[]=runtime&optional[]=es7.classProperties'
+                loader: [
+                    'babel-loader?',
+                    [
+                        'optional[]=runtime',
+                        'optional[]=es7.classProperties',
+                        'optional[]=es7.decorators'
+                    ].join('&')
+                ].join('')
             }
         ]
     }
