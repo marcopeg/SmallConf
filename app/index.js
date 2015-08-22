@@ -64,6 +64,8 @@ class RouteInfo extends React.Component {
     }
 }
 
+import Button from 'react-bootstrap/lib/Button';
+
 class Menu extends React.Component {
     static defaultProps = {
         onClick: null
@@ -72,13 +74,13 @@ class Menu extends React.Component {
         var { onClick } = this.props;
         return (
             <p style={{marginTop:20}}>
-                <a href="/" onClick={onClick}>Home</a>
+                <Button href="/" onClick={onClick}>Home</Button>
                 <span> | </span>
-                <a href="/page1" onClick={onClick}>Page1</a>
+                <Button href="/page1" onClick={onClick}>Page1</Button>
                 <span> | </span>
-                <a href="/page2" onClick={onClick}>Page2</a>
+                <Button href="/page2" onClick={onClick}>Page2</Button>
                 <span> | </span>
-                <a href="/page3" onClick={onClick}>Page3</a>
+                <Button href="/page3" onClick={onClick}>Page3</Button>
             </p>
         );
     }
