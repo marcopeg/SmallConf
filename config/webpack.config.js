@@ -1,5 +1,6 @@
 
 var path = require('path');
+var workspaceConf = require('./workspace.config');
 
 module.exports = {
     externals: {
@@ -15,10 +16,10 @@ module.exports = {
         ]
     },
     output: {
-        library: 'SmallConf',
+        library: workspaceConf.libraryName,
         libraryTarget: 'umd',
-        filename: 'smallconf.js',
-        sourceMapFilename: 'smallconf.map.js'
+        filename: workspaceConf.bundleName + '.js',
+        sourceMapFilename: workspaceConf.bundleName + '.map.js'
     },
     module: {
         loaders: [

@@ -116,7 +116,7 @@ gulp.task('release-js', function() {
     ])
         .pipe(gulpWebpack(conf))
         .pipe(gulpRename(function(path) {
-            path.basename = 'smallconf_' + pkg.version;
+            path.basename = workspaceConf.bundleName + '_' + pkg.version;
         }))
         .pipe(gulp.dest(path.join(__dirname, 'builds/release')));
 });
@@ -157,7 +157,7 @@ gulp.task('build-less', ['build-assets'], function() {
     });
     return gulp.src(path.join(__dirname, './app/*.less'))
         .pipe(gulpRename(function(path) {
-            path.basename = 'smallconf';
+            path.basename = workspaceConf.bundleName;
         }))
         .pipe(gulpSourcemaps.init())
         .pipe(gulpLess(conf))
@@ -172,7 +172,7 @@ gulp.task('release-less', ['release-assets'], function() {
     return gulp.src(path.join(__dirname, './app/*.less'))
         .pipe(gulpLess(conf))
         .pipe(gulpRename(function(path) {
-            path.basename = 'smallconf_' + pkg.version;
+            path.basename = workspaceConf.bundleName + '_' + pkg.version;
         }))
         .pipe(gulpIf(workspaceConf.release.inline.assets, gulpCssBase64({
             baseDir: '../node_modules'
@@ -218,7 +218,7 @@ function html4develop() {
         var source = String(file.contents);
         var template = hogan.compile(source);
 
-        var moduleName = require.resolve('./builds/develop/smallconf');
+        var moduleName = require.resolve('./builds/develop/' + workspaceConf.bundleName);
         delete require.cache[moduleName];
 
         if (workspaceConf.build.isomorphic) {
@@ -240,7 +240,7 @@ function html4develop() {
 
         function _render(initialState, appMarkup) {
 
-            var js = ['<script src="/smallconf.js"></script>'];
+            var js = ['<script src="/' + workspaceConf.bundleName + '.js"></script>'];
             workspaceConf.build.libs.forEach(function(lib) {
                 lib = lib.replace('node_modules', '').replace('bower_components', '');
                 js.unshift('<script src="' + lib + '"></script>');
@@ -250,8 +250,10 @@ function html4develop() {
                 firebaseUrl: appConf.firebaseUrl,
                 html: appMarkup,
                 cfg: JSON.stringify(initialState),
-                css: '<link rel="stylesheet" href="/smallconf.css" />',
-                js: js.join('\n    ')
+                css: '<link rel="stylesheet" href="/' + workspaceConf.bundleName + '.css" />',
+                js: js.join('\n    '),
+                bundleName: workspaceConf.bundleName,
+                libraryName: workspaceConf.libraryName
             };
 
             file.contents = new Buffer(template.render(data));
@@ -273,7 +275,7 @@ function html4release() {
 
         if (workspaceConf.release.isomorphic) {
             getInitialState().then(function(initialState) {
-                var appBuild = require('./builds/release/smallconf_' + pkg.version);
+                var appBuild = require('./builds/release/' + workspaceConf.bundleName + '_' + pkg.version);
                 var appMarkup = appBuild.renderMarkup(initialState);
                 _render(initialState, appMarkup);
             }).catch(function(err) {
@@ -298,9 +300,9 @@ function html4release() {
 
             var js;
             if (workspaceConf.release.inline.js) {
-                js = ['<script src="./smallconf_' + pkg.version + '.js" ' + inline.js + '></script>'];
+                js = ['<script src="./' + workspaceConf.bundleName + '_' + pkg.version + '.js" ' + inline.js + '></script>'];
             } else {
-                js = ['<script src="/smallconf_' + pkg.version + '.js" ' + inline.js + '></script>'];
+                js = ['<script src="/' + workspaceConf.bundleName + '_' + pkg.version + '.js" ' + inline.js + '></script>'];
             }
 
             if (workspaceConf.release.inline.libs) {
@@ -316,9 +318,9 @@ function html4release() {
 
             var css;
             if (workspaceConf.release.inline.libs) {
-                css = '<link rel="stylesheet" href="./smallconf_' + pkg.version + '.css" ' + inline.css + ' />';
+                css = '<link rel="stylesheet" href="./' + workspaceConf.bundleName + '_' + pkg.version + '.css" ' + inline.css + ' />';
             } else {
-                css = '<link rel="stylesheet" href="/smallconf_' + pkg.version + '.css" ' + inline.css + ' />';
+                css = '<link rel="stylesheet" href="/' + workspaceConf.bundleName + '_' + pkg.version + '.css" ' + inline.css + ' />';
             }
 
             var data = {
@@ -326,7 +328,9 @@ function html4release() {
                 html: appMarkup,
                 cfg: JSON.stringify(initialState),
                 css: css,
-                js: js.join('\n    ')
+                js: js.join('\n    '),
+                bundleName: workspaceConf.bundleName + '_' + pkg.version,
+                libraryName: workspaceConf.libraryName
             };
 
             file.contents = new Buffer(template.render(data));

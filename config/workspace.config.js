@@ -1,5 +1,7 @@
 
 module.exports = {
+    bundleName: 'react-app',
+    libraryName: 'ReactApp',
     build: {
         isomorphic: true,
         server: {

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>SmallConf</title>
+    <title>{{{ libraryName }}}</title>
     {{{ css }}}
 </head>
 
@@ -14,7 +14,7 @@
 
     <script>
     	console.log({{{ cfg }}});
-    	SmallConf.start({{{ cfg }}}, new Firebase('{{ firebaseUrl }}'));
+    	{{{ libraryName }}}.start({{{ cfg }}}, new Firebase('{{ firebaseUrl }}'));
     </script>
     
 </body>
